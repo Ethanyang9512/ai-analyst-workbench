@@ -1,0 +1,6 @@
+#!/bin/sh
+# 任务计时器：t start 开始计时；t 打印已用时
+F=/tmp/.claude_task_start
+if [ "$1" = "start" ]; then date +%s > "$F"; echo "0:00"; exit 0; fi
+S=$(cat "$F" 2>/dev/null || date +%s); N=$(date +%s); D=$((N-S))
+printf '%d:%02d\n' $((D/60)) $((D%60))

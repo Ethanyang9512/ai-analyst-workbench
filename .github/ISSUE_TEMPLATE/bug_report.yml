@@ -1,0 +1,49 @@
+name: 用不了 / 出错了
+description: 命令报错、测试失败、钩子误拦或漏拦、文档和代码对不上
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **请不要贴任何真实业务数据、同事姓名、飞书 ID、令牌、密钥或本机路径。** 报错原文里有路径的，把用户名换成 `<me>`。
+        发现的是泄露或护栏能被绕过，请改用“私下报告”（见 SECURITY.md），不要在这里写细节。
+  - type: textarea
+    id: what
+    attributes:
+      label: 想做什么
+      description: 一两句：在哪个目录、跑了什么命令、想得到什么结果
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际发生了什么
+      description: 报错原文或输出（已去掉敏感信息）
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: 操作系统
+      placeholder: macOS 15 / Ubuntu 24.04 / Windows 11 + WSL
+    validations:
+      required: true
+  - type: input
+    id: python
+    attributes:
+      label: Python 版本
+      placeholder: python3 --version 的输出
+    validations:
+      required: true
+  - type: input
+    id: claude
+    attributes:
+      label: Claude Code 版本
+      placeholder: claude --version 的输出；只用检查程序、没用到 Claude Code 可写“不涉及”
+  - type: textarea
+    id: tests
+    attributes:
+      label: bash tools/run_all_tests.sh 的结果
+      description: 最后几行即可，尤其是“失败”和“跳过”的组
+      render: text

@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 私下报告泄露或护栏绕过
+    url: https://github.com/Ethanyang9512/ai-analyst-workbench/security/advisories/new
+    about: 发现仓库里有像真实数据、姓名、账号、密钥的内容，或者钩子挡不住它声称要挡的操作，请走这里私下报告，不要开公开 issue。

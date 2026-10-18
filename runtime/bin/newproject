@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+"""一键建项目工作区（一个群 = 一个项目 = 一个工作区）。
+
+  newproject <目录名> "<项目中文名>" <chatId>
+
+会配好：工作区设置（.claude/settings.json）、项目 CLAUDE.md（@import 共享手册）、bin 工具软链、_status.md 骨架；
+设了 AAW_SHARED_MEMORY 时，再把这个工作区的记忆位置软链到共享记忆。
+目录名只用英文、数字和 -（Claude Code 按路径给会话和记忆目录起名，中文和空格会被换成 -，容易撞名）。
+
+建完还要做一件事：请用户在那个群里自己发一次 `/cd <工作区绝对路径>`（机器人发的不算命令），
+桥才会把这个群的消息路由到新工作区。建了目录不等于群已经路由过去，要核实。
+"""
+import os
+import re
+import shutil
+import subprocess
+import sys
+import time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+RUNTIME = os.environ.get("AAW_RUNTIME") or os.path.dirname(HERE)
+ROOT = os.path.expanduser(os.environ.get("AAW_WS_BASE") or "~/aaw-workspaces")
+BASE = os.path.join(ROOT, "default")
+SHARED_MEMORY = os.environ.get("AAW_SHARED_MEMORY")       # 可选：各项目共用的记忆目录
+PROJ = os.path.expanduser("~/.claude/projects")
+WS_TOOL = os.path.join(RUNTIME, "workspace_settings.py")
+SETTINGS_EXAMPLE = os.path.join(RUNTIME, "settings.example.json")
+
+
+def slug(path):                      # Claude 项目目录名：字母数字以外的字符都变成 -（和 Claude Code、桥一致）
+    return re.sub(r"[^a-zA-Z0-9]", "-", path)
+
+
+def link(src, dst):
+    if os.path.islink(dst) or os.path.exists(dst):
+        return "已存在"
+    os.symlink(src, dst)
+    return "已链接"
+
+
+if len(sys.argv) != 4:
+    print(__doc__.strip())
+    sys.exit(2)
+name, cn, chat = sys.argv[1], sys.argv[2], sys.argv[3]
+if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]*", name):
+    sys.exit("目录名只用英文、数字和 -，例如 renewal-analysis")
+if not chat.startswith("oc_"):
+    sys.exit("chatId 应以 oc_ 开头（从本轮 bridge_context 里取）")
+ws = os.path.join(ROOT, name)
+os.makedirs(os.path.join(ws, ".claude"), exist_ok=True)
+
+# 1) 工作区设置：先复制 default 工作区的（里面可能有你的代理和模型设置——新目录缺了代理会 403 且不报错），
+#    没有就用样例；再用 workspace_settings.py 补上关后台运行、推理强度、钩子、写入门槛这些受管的键。
+dst = os.path.join(ws, ".claude", "settings.json")
+if not os.path.exists(dst):
+    src = os.path.join(BASE, ".claude", "settings.json")
+    shutil.copy2(src if os.path.isfile(src) else SETTINGS_EXAMPLE, dst)
+if os.path.isfile(WS_TOOL):
+    subprocess.run([sys.executable, WS_TOOL, "apply", "--path", ws, "--kind", "project"], check=False)
+
+# 2) 项目 CLAUDE.md，@import 共享手册
+if not os.path.exists(os.path.join(ws, "CLAUDE.md")):
+    with open(os.path.join(ws, "CLAUDE.md"), "w", encoding="utf-8") as f:
+        f.write(f"""# {cn}
+
+本目录是飞书群「{cn}」的专属工作区——**一个群 = 一个项目**。
+群 chatId：`{chat}`
+
+通用工作手册（回复风格 / 进度播报 / 交付方式 / 环境坑）见下面这份共享手册：
+
+@../default/CLAUDE.md
+
+## 本项目约定
+
+- 交付物直接放本目录，版本化命名，不覆盖旧版
+- 进展、下一步、待用户拍板项一律写进 `_status.md`；被打断或 `/new` 前先更新它
+- 口径和用词的约定写进 `_CONVENTIONS.md`，术语写进 `_glossary.md`（同类纠正第二次出现时才写）
+- 起进度卡片时 chatId 用 `{chat}`
+""")
+
+# 3) _status.md 骨架（现状摘要块的顺序和 workflow.md「状态与记忆」一致）
+if not os.path.exists(os.path.join(ws, "_status.md")):
+    with open(os.path.join(ws, "_status.md"), "w", encoding="utf-8") as f:
+        f.write(
+            f"# {cn} · 进展\n\n<!-- 现状摘要:开始 -->\n## 现状摘要（更新于 {time.strftime('%Y-%m-%d %H:%M')}）\n\n"
+            "**当前在做**：（待填）\n\n**下一步**：（待填）\n\n**仍然有效的限制**：（无）\n\n**最近的决定**：（无）\n\n"
+            "**在等谁**：（无）\n\n**当前有效成品和链接**：（无）\n\n**给取数助手的交接**：（无）\n"
+            "<!-- 现状摘要:结束 -->\n\n## 历史记录\n")
+
+# 4) bin 工具（进度卡片/计时器/播报）
+bin_state = link(HERE, os.path.join(ws, "bin"))
+
+# 5) 可选：记忆软链到共享记忆（Claude Code 按工作区路径挂记忆，不链的话每个群各记各的）
+mem = "未链接（没设 AAW_SHARED_MEMORY，各工作区各用各的记忆）"
+if SHARED_MEMORY:
+    pdir = os.path.join(PROJ, slug(ws))
+    os.makedirs(pdir, exist_ok=True)
+    mem = f"{pdir}/memory -> {SHARED_MEMORY}（{link(os.path.expanduser(SHARED_MEMORY), os.path.join(pdir, 'memory'))}）"
+
+print(f"已建好：{cn}")
+print(f"   工作区: {ws}")
+print(f"   bin   : {bin_state}")
+print(f"   记忆  : {mem}")
+print(f"   下一步: 请用户在该群发 /cd {ws}")

@@ -1,0 +1,17 @@
+#!/bin/sh
+# 发一条独立进度消息（不依赖 COT 气泡，用户无需点击）
+# 用法: ./bin/p <chatId> "第 2/4 步 · 正在写配置"
+if [ $# -lt 2 ]; then
+  echo '用法: ./bin/p <chatId> "第 2/4 步 · 正在写配置"' >&2
+  exit 2
+fi
+D=$(dirname "$0"); CHAT="$1"; shift
+EL=$("$D/t")
+J=$(mktemp "${TMPDIR:-/tmp}/p.XXXXXX") || exit 1      # 每次一个临时文件，几个群同时发也不会互相覆盖
+python3 -c "
+import json,sys
+open(sys.argv[3],'w').write(json.dumps({'text':'⏱ '+sys.argv[1]+' · '+sys.argv[2]},ensure_ascii=False))
+" "$EL" "$*" "$J"
+lark-cli im +messages-send --as bot --chat-id "$CHAT" --msg-type text \
+  --content "$(cat "$J")" 2>&1 | grep -q '"ok": true' && echo "sent [$EL]" || echo "FAILED"
+rm -f "$J"

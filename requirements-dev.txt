@@ -1,0 +1,9 @@
+# 跑全部测试（含可选组）要装的依赖：python3 -m pip install -r requirements-dev.txt
+# 只用标准库也能跑 bash tools/run_all_tests.sh，缺这些依赖的组会显示“跳过”。
+python-pptx      # slide-deck 的 check_deck.py
+matplotlib       # report-writing 的 figcheck.py、chart_template.py
+scipy            # chart_template.py 的平滑折线（没有就画折线）
+pymupdf          # deckcheck.py pdf（AGPL-3.0 许可，只用于这一项检查）
+openpyxl
+pandas
+-r skills/optimization-modeling/requirements.txt

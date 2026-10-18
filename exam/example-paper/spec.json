@@ -1,0 +1,21 @@
+{
+  "_说明": "对 make_blocks.py 切出的草稿块逐块分类。category：A 规则覆盖（必须写 rules）、B 规则没写到的写法改动、C 事实或口径改动（不计分）。coverage：块里只有一部分改法有规则依据时写“部分”。merge / override 用法见 exam/README.md。",
+  "merge": {"B08": ["B06", "B07"]},
+  "override": {},
+  "cls": {
+    "B01": {"category": "A", "rules": ["R1_conclusion_first"], "note": "第一部分标题去掉“分析过程与”"},
+    "B02": {"category": "A", "rules": ["R1_conclusion_first", "R2_short_bold"], "note": "删过程叙述，换成一句短的加粗结论"},
+    "B03": {"category": "A", "rules": ["R2_short_bold"], "note": "长加粗句拆开，解释部分不加粗；开头改成先报 W6 的值没有规则依据", "coverage": "部分"},
+    "B04": {"category": "A", "rules": ["R4_no_hype", "R5_one_decimal", "R7_data_shows"], "note": "断崖式下跌→下降、保留一位小数、我们认为→数据显示；句子重组本身没有规则依据", "coverage": "部分"},
+    "B05": {"category": "B", "note": "“集中迎来第一次续费，同时”改成“开始第一次续费，二是因为”，规则没写到"},
+    "B08": {"category": "A", "rules": ["R2_short_bold"], "note": "拆句后的标点和去掉句末加粗；“维持”→“仍在”没有规则依据", "coverage": "部分"},
+    "B09": {"category": "A", "rules": ["R3_no_filler"], "note": "删“值得注意的是”"},
+    "B10": {"category": "A", "rules": ["R5_one_decimal"], "note": "表里 76.98% → 77.0%"},
+    "B11": {"category": "A", "rules": ["R6_one_term"], "note": "标题里“续订”→“续费”"},
+    "B12": {"category": "A", "rules": ["R5_one_decimal"], "note": "3.78pt → 3.8pt"},
+    "B13": {"category": "C", "note": "用户对过源表，把年付首次续费 W6 的续费率改对（事实改动，不计分）"},
+    "B14": {"category": "B", "note": "删掉没有数据支撑的“其中多为对价格敏感的学生用户”，“年付没有涨价”改成“年付价格没变”，规则没写到"},
+    "B15": {"category": "B", "note": "“保持在”→“仍是”，规则没写到"},
+    "B16": {"category": "A", "rules": ["R8_no_internal"], "note": "删内部包号和“仅供参考”"}
+  }
+}

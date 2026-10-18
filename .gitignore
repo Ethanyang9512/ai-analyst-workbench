@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 本地临时目录（不提交）
+_build/
+
+# 验收记录：每个工作区运行时生成，属于你自己的交付记录
+_acceptance/
+
+# 钩子运行状态
+runtime/hooks/hook.log
+runtime/hooks/.alive-*
+runtime/hooks/GATE_ENFORCE
+runtime/hooks/DISABLED
+
+# 考场每次运行的产出
+exam/runs/
+
+# 你本机的配置（可能含路径、代理或令牌）
+*.local.env
+config.env
+.env

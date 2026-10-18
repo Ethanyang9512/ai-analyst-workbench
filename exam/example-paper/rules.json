@@ -1,0 +1,11 @@
+{
+  "_说明": "规则出处：key → {file: 相对本文件的路径, quote: 文件里的一段原句}。finalize.py 会逐条核对 quote 确实在 file 里。",
+  "R1_conclusion_first": {"file": "rules_demo.md", "quote": "第一部分只写结论，不写分析过程"},
+  "R2_short_bold": {"file": "rules_demo.md", "quote": "加粗的结论句不超过 40 字"},
+  "R3_no_filler": {"file": "rules_demo.md", "quote": "“值得注意的是”整句删"},
+  "R4_no_hype": {"file": "rules_demo.md", "quote": "不用“断崖式”“暴跌”这类渲染词"},
+  "R5_one_decimal": {"file": "rules_demo.md", "quote": "百分比和 pt 保留一位小数"},
+  "R6_one_term": {"file": "rules_demo.md", "quote": "写“续费”，不写“续订”"},
+  "R7_data_shows": {"file": "rules_demo.md", "quote": "不写“我们认为”“我们判断”，写“数据显示”"},
+  "R8_no_internal": {"file": "rules_demo.md", "quote": "不写内部包号和取数过程"}
+}

@@ -1,0 +1,5 @@
+#!/bin/sh
+# 考场用的假阶段检查：记一笔，永远回 continue。
+LOG="${AAW_EXAM_RUN:-${AAW_EXAM_ROOT:-/tmp/aaw-exam}}/calls.log"
+printf '%s\tcheckpoint %s\n' "$(date '+%H:%M:%S')" "$*" >> "$LOG"
+echo '{"action":"continue"}'

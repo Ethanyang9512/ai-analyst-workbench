@@ -1,0 +1,709 @@
+{
+ "paper": "example-paper",
+ "name": "续费率下降分析（虚构示例）",
+ "kind": "normal",
+ "sources": {
+  "delivered": "（虚构）报告_v1.md",
+  "final": "（虚构）用户在飞书文档里改完的定稿"
+ },
+ "pair_note": "完全虚构的成对稿：delivered.md 是分析助手交付的初稿，final.md 是用户手改后的定稿，candidate.md 是一位虚构考生按规则自查后的稿子（演示打分用）。",
+ "method": "块由 make_blocks.py 切（行级 difflib → 改写行按字符级再切，相距 ≤8 字并成一处；整章/整节删除算 1 块；同一张表里的改动合成 1 块；删除块与新增块文字覆盖 ≥0.65 记调序）；分类与合并在 spec.json，规则原句在 rules.json，生成时逐条核对原句确实在规则文件里。",
+ "category_def": {
+  "A": "规则覆盖：现行规则（写作技能、台账、图表规范、故事线技能、写作类记忆、用户明确定过的规矩）有明写的规则能推出这处改法",
+  "B": "规则没写到的写法改动（含规则方向相反的）",
+  "C": "事实或口径改动、非写法改动，不计分"
+ },
+ "counts": {
+  "blocks": 14,
+  "A": 10,
+  "B": 3,
+  "C": 1,
+  "A_full": 7,
+  "A_partial": 3,
+  "scored_blocks": 13,
+  "scored_A": 10,
+  "scored_B": 3,
+  "author_uncertain": 0,
+  "by_type": {
+   "删除": 4,
+   "改写": 10
+  },
+  "A_lines_weighted": 10,
+  "all_lines_weighted": 14
+ },
+ "stats": {
+  "delivered_chars": 819,
+  "final_chars": 724,
+  "length_ratio_chars": 0.884,
+  "delivered_zh": 505,
+  "final_zh": 410,
+  "length_ratio_zh": 0.812,
+  "delivered_body_lines": 30,
+  "final_body_lines": 29,
+  "delivered_lines_touched": 10,
+  "delivered_lines_touched_ratio": 0.333,
+  "chars_def": "去掉 markdown 记号、[图片]/[画板] 占位和全部空白后的字符数；zh 只数汉字"
+ },
+ "numbers": {
+  "note": "从 final.md 抽出的数字（含单位）及出现次数；added = 定稿有、交付版没有；removed = 交付版有、定稿没有。",
+  "final": [
+   {
+    "token": "3.8pt",
+    "count": 3
+   },
+   {
+    "token": "60%",
+    "count": 1
+   },
+   {
+    "token": "40%",
+    "count": 1
+   },
+   {
+    "token": "77.0%",
+    "count": 2
+   },
+   {
+    "token": "80.8%",
+    "count": 5
+   },
+   {
+    "token": "1.78万",
+    "count": 1
+   },
+   {
+    "token": "80.7%",
+    "count": 1
+   },
+   {
+    "token": "1.81万",
+    "count": 2
+   },
+   {
+    "token": "1.79万",
+    "count": 1
+   },
+   {
+    "token": "80.6%",
+    "count": 2
+   },
+   {
+    "token": "1.80万",
+    "count": 1
+   },
+   {
+    "token": "2.00万",
+    "count": 1
+   },
+   {
+    "token": "2.04万",
+    "count": 1
+   },
+   {
+    "token": "76.7%",
+    "count": 1
+   },
+   {
+    "token": "1.98万",
+    "count": 1
+   },
+   {
+    "token": "77.2%",
+    "count": 1
+   },
+   {
+    "token": "77%",
+    "count": 1
+   },
+   {
+    "token": "14.3%",
+    "count": 1
+   },
+   {
+    "token": "17.7%",
+    "count": 1
+   },
+   {
+    "token": "3.4pt",
+    "count": 2
+   },
+   {
+    "token": "5.0%",
+    "count": 1
+   },
+   {
+    "token": "5.3%",
+    "count": 1
+   },
+   {
+    "token": "21.1%",
+    "count": 1
+   },
+   {
+    "token": "29.0%",
+    "count": 1
+   },
+   {
+    "token": "4.4%",
+    "count": 1
+   },
+   {
+    "token": "14.0%",
+    "count": 1
+   },
+   {
+    "token": "58.0%",
+    "count": 1
+   },
+   {
+    "token": "2.3pt",
+    "count": 1
+   },
+   {
+    "token": "84.0%",
+    "count": 1
+   },
+   {
+    "token": "82.0%",
+    "count": 1
+   },
+   {
+    "token": "70.0%",
+    "count": 1
+   },
+   {
+    "token": "68.0%",
+    "count": 1
+   },
+   {
+    "token": "86.0%",
+    "count": 1
+   },
+   {
+    "token": "1.5pt",
+    "count": 1
+   }
+  ],
+  "added_vs_delivered": [
+   "3.8pt",
+   "60%",
+   "40%",
+   "77.0%",
+   "58.0%"
+  ],
+  "removed_vs_delivered": [
+   "76.98%",
+   "3.78pt",
+   "57.0%",
+   "1轮"
+  ]
+ },
+ "unique_fragments": {
+  "note": "15 字以上、交付版里没有、规则与记忆文本里也没有、且至少 10 个字是用户新写的片段；考生输出里出现即疑似读过定稿。比较时先去掉 markdown 记号与空白。also_found_in_project 列出项目目录里同样含这段字的文件，开考前要一并挡住，否则这条片段不能用。",
+  "items": [
+   {
+    "fragment": "续费率W6起下降约3.8pt，约60%来自到期订阅的构成变化",
+    "inserted_chars": 26,
+    "block": "B02",
+    "rule_text_overlap": 0.0,
+    "also_found_in_project": []
+   },
+   {
+    "fragment": "77.0%，比W5的80.8%低3.8pt。数据显示，下降一",
+    "inserted_chars": 15,
+    "block": "B06",
+    "rule_text_overlap": 0.0,
+    "also_found_in_project": []
+   },
+   {
+    "fragment": "低3.8pt。数据显示，下降一是因为",
+    "inserted_chars": 10,
+    "block": "B04",
+    "rule_text_overlap": 0.0,
+    "also_found_in_project": []
+   }
+  ],
+  "weak_note": "下面这些也是定稿独有、15 字以上，但片段里的用户新写部分在规则或记忆原文里出现过，考生照规则改也可能写出同样的字，只能当弱证据。",
+  "weak_items": []
+ },
+ "blocks": [
+  {
+   "id": "B01",
+   "draft_id": "B01",
+   "type": "删除",
+   "scope": "句内",
+   "category": "A",
+   "rules": [
+    {
+     "file": "rules_demo.md",
+     "quote": "第一部分只写结论，不写分析过程"
+    }
+   ],
+   "note": "第一部分标题去掉“分析过程与”",
+   "author": "用户亲笔",
+   "score": "计入",
+   "coverage": "全部",
+   "delivered": "分析过程与",
+   "final": "",
+   "delivered_context": "## 一、【分析过程与】结论",
+   "final_context": "## 一、【】结论",
+   "section_delivered": "续费率下降分析（W1–W8） > 一、分析过程与结论",
+   "section_final": "续费率下降分析（W1–W8） > 一、结论",
+   "d_lines": [
+    5
+   ],
+   "f_lines": [
+    5
+   ],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 1,
+    "d_chars": 5,
+    "f_chars": 0
+   }
+  },
+  {
+   "id": "B02",
+   "draft_id": "B02",
+   "type": "改写",
+   "scope": "整段",
+   "category": "A",
+   "rules": [
+    {
+     "file": "rules_demo.md",
+     "quote": "第一部分只写结论，不写分析过程"
+    },
+    {
+     "file": "rules_demo.md",
+     "quote": "加粗的结论句不超过 40 字"
+    }
+   ],
+   "note": "删过程叙述，换成一句短的加粗结论",
+   "author": "用户亲笔",
+   "score": "计入",
+   "coverage": "全部",
+   "delivered": "本次分析首先从到期订阅明细出发，按周计算了续费率，然后把未续费的订阅拆成主动取消和扣款失败两类，最后按方案和续费次数下钻。",
+   "final": "**续费率 W6 起下降约 3.8pt，约 60% 来自到期订阅的构成变化，约 40% 来自月付涨价。**",
+   "section_delivered": "续费率下降分析（W1–W8） > 一、分析过程与结论",
+   "section_final": "续费率下降分析（W1–W8） > 一、结论",
+   "d_lines": [
+    7
+   ],
+   "f_lines": [
+    7
+   ],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 1,
+    "d_chars": 61,
+    "f_chars": 42
+   }
+  },
+  {
+   "id": "B03",
+   "draft_id": "B03",
+   "type": "改写",
+   "scope": "句内",
+   "category": "A",
+   "rules": [
+    {
+     "file": "rules_demo.md",
+     "quote": "加粗的结论句不超过 40 字"
+    }
+   ],
+   "note": "长加粗句拆开，解释部分不加粗；开头改成先报 W6 的值没有规则依据",
+   "author": "用户亲笔",
+   "score": "计入",
+   "coverage": "部分",
+   "delivered": "**结论：续费率从",
+   "final": "W6 续费率 77.0%，比",
+   "delivered_context": "【**结论：续费率从】 W5 的 80.8% …",
+   "final_context": "【W6 续费率 77.0%，比】 W5 的 80.8% …",
+   "section_delivered": "续费率下降分析（W1–W8） > 一、分析过程与结论",
+   "section_final": "续费率下降分析（W1–W8） > 一、结论",
+   "d_lines": [
+    9
+   ],
+   "f_lines": [
+    9
+   ],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 1,
+    "d_chars": 7,
+    "f_chars": 12
+   }
+  },
+  {
+   "id": "B04",
+   "draft_id": "B04",
+   "type": "改写",
+   "scope": "句内",
+   "category": "A",
+   "rules": [
+    {
+     "file": "rules_demo.md",
+     "quote": "不用“断崖式”“暴跌”这类渲染词"
+    },
+    {
+     "file": "rules_demo.md",
+     "quote": "百分比和 pt 保留一位小数"
+    },
+    {
+     "file": "rules_demo.md",
+     "quote": "不写“我们认为”“我们判断”，写“数据显示”"
+    }
+   ],
+   "note": "断崖式下跌→下降、保留一位小数、我们认为→数据显示；句子重组本身没有规则依据",
+   "author": "用户亲笔",
+   "score": "计入",
+   "coverage": "部分",
+   "delivered": "断崖式下跌到 W6 的 76.98%，比 W5 低 3.78pt，我们认为主要原因是",
+   "final": "低 3.8pt。数据显示，下降一是因为",
+   "delivered_context": "… W5 的 80.8% 【断崖式下跌到 W6 的 76.98%，比 W5 低 3.78pt，我们认为主要原因是】去年首年优惠买的年付订阅…",
+   "final_context": "… W5 的 80.8% 【低 3.8pt。数据显示，下降一是因为】去年首年优惠买的年付订阅…",
+   "section_delivered": "续费率下降分析（W1–W8） > 一、分析过程与结论",
+   "section_final": "续费率下降分析（W1–W8） > 一、结论",
+   "d_lines": [
+    9
+   ],
+   "f_lines": [
+    9
+   ],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 1,
+    "d_chars": 36,
+    "f_chars": 18
+   }
+  },
+  {
+   "id": "B05",
+   "draft_id": "B05",
+   "type": "改写",
+   "scope": "句内",
+   "category": "B",
+   "rules": [],
+   "note": "“集中迎来第一次续费，同时”改成“开始第一次续费，二是因为”，规则没写到",
+   "author": "用户亲笔",
+   "score": "计入",
+   "coverage": "",
+   "delivered": "集中迎来第一次续费，同时",
+   "final": "开始第一次续费，二是因为",
+   "delivered_context": "…买的年付订阅从 W6 起【集中迎来第一次续费，同时】月付方案 W6 起涨价，…",
+   "final_context": "…买的年付订阅从 W6 起【开始第一次续费，二是因为】月付方案 W6 起涨价；…",
+   "section_delivered": "续费率下降分析（W1–W8） > 一、分析过程与结论",
+   "section_final": "续费率下降分析（W1–W8） > 一、结论",
+   "d_lines": [
+    9
+   ],
+   "f_lines": [
+    9
+   ],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 1,
+    "d_chars": 12,
+    "f_chars": 12
+   }
+  },
+  {
+   "id": "B06",
+   "draft_id": "B08",
+   "type": "改写",
+   "scope": "句内",
+   "category": "A",
+   "rules": [
+    {
+     "file": "rules_demo.md",
+     "quote": "加粗的结论句不超过 40 字"
+    }
+   ],
+   "note": "拆句后的标点和去掉句末加粗；“维持”→“仍在”没有规则依据",
+   "author": "用户亲笔",
+   "score": "计入",
+   "coverage": "部分",
+   "delivered": "**结论：续费率从 W5 的 80.8% 断崖式下跌到 W6 的 76.98%，比 W5 低 3.78pt，我们认为主要原因是去年首年优惠买的年付订阅从 W6 起集中迎来第一次续费，同时月付方案 W6 起涨价，扣款失败基本没有变化，W7、W8 续费率维持在低位。**",
+   "final": "W6 续费率 77.0%，比 W5 的 80.8% 低 3.8pt。数据显示，下降一是因为去年首年优惠买的年付订阅从 W6 起开始第一次续费，二是因为月付方案 W6 起涨价；扣款失败基本没有变化。W7、W8 续费率仍在低位。",
+   "merged_from_draft": [
+    "B06",
+    "B07"
+   ],
+   "section_delivered": "续费率下降分析（W1–W8） > 一、分析过程与结论",
+   "section_final": "续费率下降分析（W1–W8） > 一、结论",
+   "d_lines": [
+    9
+   ],
+   "f_lines": [
+    9
+   ],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 1,
+    "d_chars": 114,
+    "f_chars": 100
+   }
+  },
+  {
+   "id": "B07",
+   "draft_id": "B09",
+   "type": "删除",
+   "scope": "句内",
+   "category": "A",
+   "rules": [
+    {
+     "file": "rules_demo.md",
+     "quote": "“值得注意的是”整句删"
+    }
+   ],
+   "note": "删“值得注意的是”",
+   "author": "用户亲笔",
+   "score": "计入",
+   "coverage": "全部",
+   "delivered": "值得注意的是，",
+   "final": "",
+   "delivered_context": "【值得注意的是，】续费率的分母是当周到期的…",
+   "final_context": "【】续费率的分母是当周到期的…",
+   "section_delivered": "续费率下降分析（W1–W8） > 一、分析过程与结论",
+   "section_final": "续费率下降分析（W1–W8） > 一、结论",
+   "d_lines": [
+    11
+   ],
+   "f_lines": [
+    11
+   ],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 1,
+    "d_chars": 7,
+    "f_chars": 0
+   }
+  },
+  {
+   "id": "B08",
+   "draft_id": "B10",
+   "type": "改写",
+   "scope": "句内",
+   "category": "A",
+   "rules": [
+    {
+     "file": "rules_demo.md",
+     "quote": "百分比和 pt 保留一位小数"
+    }
+   ],
+   "note": "表里 76.98% → 77.0%",
+   "author": "用户亲笔",
+   "score": "计入",
+   "coverage": "全部",
+   "delivered": "6.98",
+   "final": "7.0",
+   "delivered_context": "… | 2.00万 | 7【6.98】% |",
+   "final_context": "… | 2.00万 | 7【7.0】% |",
+   "section_delivered": "续费率下降分析（W1–W8） > 二、续费率的周走势",
+   "section_final": "续费率下降分析（W1–W8） > 二、续费率的周走势",
+   "d_lines": [
+    22
+   ],
+   "f_lines": [
+    22
+   ],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 1,
+    "d_chars": 4,
+    "f_chars": 3
+   }
+  },
+  {
+   "id": "B09",
+   "draft_id": "B11",
+   "type": "改写",
+   "scope": "句内",
+   "category": "A",
+   "rules": [
+    {
+     "file": "rules_demo.md",
+     "quote": "写“续费”，不写“续订”"
+    }
+   ],
+   "note": "标题里“续订”→“续费”",
+   "author": "用户亲笔",
+   "score": "计入",
+   "coverage": "全部",
+   "delivered": "订",
+   "final": "费",
+   "delivered_context": "## 三、未续【订】的两类",
+   "final_context": "## 三、未续【费】的两类",
+   "section_delivered": "续费率下降分析（W1–W8） > 三、未续订的两类",
+   "section_final": "续费率下降分析（W1–W8） > 三、未续费的两类",
+   "d_lines": [
+    28
+   ],
+   "f_lines": [
+    28
+   ],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 1,
+    "d_chars": 1,
+    "f_chars": 1
+   }
+  },
+  {
+   "id": "B10",
+   "draft_id": "B12",
+   "type": "删除",
+   "scope": "句内",
+   "category": "A",
+   "rules": [
+    {
+     "file": "rules_demo.md",
+     "quote": "百分比和 pt 保留一位小数"
+    }
+   ],
+   "note": "3.78pt → 3.8pt",
+   "author": "用户亲笔",
+   "score": "计入",
+   "coverage": "全部",
+   "delivered": "7",
+   "final": "",
+   "delivered_context": "…，解释了续费率下降 3.【7】8pt 里的大部分。",
+   "final_context": "…，解释了续费率下降 3.【】8pt 里的大部分。",
+   "section_delivered": "续费率下降分析（W1–W8） > 三、未续订的两类",
+   "section_final": "续费率下降分析（W1–W8） > 三、未续费的两类",
+   "d_lines": [
+    33
+   ],
+   "f_lines": [
+    33
+   ],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 1,
+    "d_chars": 1,
+    "f_chars": 0
+   }
+  },
+  {
+   "id": "B11",
+   "draft_id": "B13",
+   "type": "改写",
+   "scope": "句内",
+   "category": "C",
+   "rules": [],
+   "note": "用户对过源表，把年付首次续费 W6 的续费率改对（事实改动，不计分）",
+   "author": "用户亲笔",
+   "score": "不计（非写法）",
+   "coverage": "",
+   "delivered": "7",
+   "final": "8",
+   "delivered_context": "…阅的续费率 W6 是 5【7】.0%，和 W5 持平。",
+   "final_context": "…阅的续费率 W6 是 5【8】.0%，和 W5 持平。",
+   "section_delivered": "续费率下降分析（W1–W8） > 四、到期订阅的构成变化",
+   "section_final": "续费率下降分析（W1–W8） > 四、到期订阅的构成变化",
+   "d_lines": [
+    38
+   ],
+   "f_lines": [
+    38
+   ],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 1,
+    "d_chars": 1,
+    "f_chars": 1
+   }
+  },
+  {
+   "id": "B12",
+   "draft_id": "B14",
+   "type": "改写",
+   "scope": "句内",
+   "category": "B",
+   "rules": [],
+   "note": "删掉没有数据支撑的“其中多为对价格敏感的学生用户”，“年付没有涨价”改成“年付价格没变”，规则没写到",
+   "author": "用户亲笔",
+   "score": "计入",
+   "coverage": "",
+   "delivered": "，其中多为对价格敏感的学生用户；年付没有涨价",
+   "final": "；年付价格没变",
+   "delivered_context": "….0% 降到 68.0%【，其中多为对价格敏感的学生用户；年付没有涨价】，多次续费的续费率保持在…",
+   "final_context": "….0% 降到 68.0%【；年付价格没变】，多次续费的续费率仍是 …",
+   "section_delivered": "续费率下降分析（W1–W8） > 五、月付涨价的影响",
+   "section_final": "续费率下降分析（W1–W8） > 五、月付涨价的影响",
+   "d_lines": [
+    43
+   ],
+   "f_lines": [
+    43
+   ],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 1,
+    "d_chars": 22,
+    "f_chars": 7
+   }
+  },
+  {
+   "id": "B13",
+   "draft_id": "B15",
+   "type": "改写",
+   "scope": "句内",
+   "category": "B",
+   "rules": [],
+   "note": "“保持在”→“仍是”，规则没写到",
+   "author": "用户亲笔",
+   "score": "计入",
+   "coverage": "",
+   "delivered": "保持在",
+   "final": "仍是",
+   "delivered_context": "…有涨价，多次续费的续费率【保持在】 86.0%。各类续费率…",
+   "final_context": "…格没变，多次续费的续费率【仍是】 86.0%。各类续费率…",
+   "section_delivered": "续费率下降分析（W1–W8） > 五、月付涨价的影响",
+   "section_final": "续费率下降分析（W1–W8） > 五、月付涨价的影响",
+   "d_lines": [
+    43
+   ],
+   "f_lines": [
+    43
+   ],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 1,
+    "d_chars": 3,
+    "f_chars": 2
+   }
+  },
+  {
+   "id": "B14",
+   "draft_id": "B16",
+   "type": "删除",
+   "scope": "整段",
+   "category": "A",
+   "rules": [
+    {
+     "file": "rules_demo.md",
+     "quote": "不写内部包号和取数过程"
+    }
+   ],
+   "note": "删内部包号和“仅供参考”",
+   "author": "用户亲笔",
+   "score": "计入",
+   "coverage": "全部",
+   "delivered": "- 以上数据来自取数助手第 1 轮回包，结论仅供参考，可能存在一定偏差。",
+   "final": "",
+   "section_delivered": "续费率下降分析（W1–W8） > 六、待确认事项",
+   "section_final": "",
+   "d_lines": [
+    48
+   ],
+   "f_lines": [],
+   "weight": {
+    "d_lines": 1,
+    "f_lines": 0,
+    "d_chars": 32,
+    "f_chars": 0
+   }
+  }
+ ]
+}

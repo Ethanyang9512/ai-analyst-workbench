@@ -1,0 +1,6 @@
+{
+  "name": "续费率下降分析（虚构示例）",
+  "kind": "normal",
+  "note": "完全虚构的成对稿：delivered.md 是分析助手交付的初稿，final.md 是用户手改后的定稿，candidate.md 是一位虚构考生按规则自查后的稿子（演示打分用）。",
+  "sources": {"delivered": "（虚构）报告_v1.md", "final": "（虚构）用户在飞书文档里改完的定稿"}
+}

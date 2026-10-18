@@ -1,0 +1,5 @@
+#!/bin/sh
+# 考场用的假 lark-cli：只把参数记到本场考试的 calls.log，不连飞书、不发任何东西。
+LOG="${AAW_EXAM_RUN:-${AAW_EXAM_ROOT:-/tmp/aaw-exam}}/calls.log"
+printf '%s\tlark-cli %s\n' "$(date '+%H:%M:%S')" "$*" >> "$LOG"
+echo '{"ok": true, "identity": "bot", "data": {"note": "exam sandbox fake lark-cli, nothing was sent or fetched"}}'

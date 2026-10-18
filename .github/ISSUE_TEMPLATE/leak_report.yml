@@ -1,0 +1,30 @@
+name: 发现疑似泄露（只写位置）
+description: 仓库里有像真实公司、人名、账号、密钥、本机路径的内容
+labels: [leak]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## ⚠ 不要在这里贴出你看到的原文
+        公开 issue 谁都能看到。只写**文件名和行号**，维护者会自己去看。
+        内容比较敏感（比如像真实的令牌、姓名），请改用私下报告：仓库的 Security → Report a vulnerability。
+  - type: input
+    id: location
+    attributes:
+      label: 文件和行号
+      placeholder: docs/02-运行逻辑.md 第 120 行
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 像是哪一类
+      options:
+        - 公司、品牌或内部系统名
+        - 人名或账号（飞书 ID、邮箱等）
+        - 令牌、密钥、口令
+        - 本机路径
+        - 像真实的业务数字或项目细节
+        - 其他
+    validations:
+      required: true

@@ -1,0 +1,26 @@
+name: 建议 / 新的检查
+description: 想把一条“靠人记的规矩”写成程序检查、改进模板，或适配别的场景
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: 请用虚构的例子说明，不要贴真实业务内容。
+  - type: textarea
+    id: problem
+    attributes:
+      label: 现在遇到的问题
+      description: 哪一类错误反复出现、哪一步总要手动做
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 想怎么改
+      description: 规则或技能的改动请写“改前 / 改后 / 一个样例”；能写成程序检查的，说说程序该查什么
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: 一个虚构的样例
+      description: 输入是什么、期望程序或助手怎么处理

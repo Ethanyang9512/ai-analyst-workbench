@@ -1,0 +1,11 @@
+{
+  "_说明": "workspace_settings.py 读这份文件。以下划线开头的键只是说明，程序不读。改完运行 python3 workspace_settings.py apply --all 生效，各群发 /new 后新会话才用上。",
+  "effort": "high",
+  "_effort": "推理强度，写进各工作区 .claude/settings.json 的 effortLevel。可选值以你的 Claude Code 版本为准（如 low / medium / high / xhigh）。越高越慢、越费额度。",
+  "disabled_plugins": [],
+  "_disabled_plugins": "只对项目工作区：要关掉的插件全名（插件名@市场名），例如流程类插件会要求额外确认、和桥里一问一答的方式冲突时可以关掉。",
+  "hide_skills": [],
+  "_hide_skills": "只对项目工作区：要隐藏的技能名（~/.claude/skills/ 下的目录名）。和分析工作无关的技能藏起来，少占上下文、少误触发。",
+  "hide_skill_prefixes": [],
+  "_hide_skill_prefixes": "同上，按名字前缀批量隐藏，例如某一整套个人写作技能的共同前缀。"
+}

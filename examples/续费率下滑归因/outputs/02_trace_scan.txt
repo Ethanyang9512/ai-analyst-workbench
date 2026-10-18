@@ -1,0 +1,6 @@
+# 内部痕迹检查：交付版末尾那句提到了协作方和回包
+$ python3 skills/report-writing/scripts/trace_scan.py exam/example-paper/delivered.md
+== exam/example-paper/delivered.md  命中 2 / 待判断 0 ==
+  [命中] L48 协作方「取数助手」 | - 以上数据来自取数助手第 1 轮回包，结论仅供参考
+  [命中] L48 过程用词「回包」 | 上数据来自取数助手第 1 轮回包，结论仅供参考，可能存在一定
+（退出码 1）

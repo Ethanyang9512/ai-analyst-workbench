@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+"""列出各群进度卡的状态。只读本机的状态文件，不调用飞书。
+用法：./bin/status-all
+
+群名怎么来：设了 AAW_BRIDGE_WORKSPACES（桥记录“群 → 工作区”的 JSON，形如 {"chats": {chatId: {"cwd": …}}}）时，
+先把群号换成工作区目录，再取那个工作区 CLAUDE.md 第一行标题当群名；没设就只显示群号尾号。
+"""
+import glob
+import json
+import os
+import time
+
+ROOT = os.path.expanduser(os.environ.get("AAW_WS_BASE") or "~/aaw-workspaces")
+
+
+def title_of(ws_dir):
+    """工作区 CLAUDE.md 第一行的标题（去掉 #）；读不到返回目录名。"""
+    try:
+        with open(os.path.join(ws_dir, "CLAUDE.md"), encoding="utf-8") as f:
+            first = f.readline().strip()
+        return first.lstrip("#").strip() or os.path.basename(ws_dir)
+    except OSError:
+        return os.path.basename(ws_dir)
+
+
+names = {}
+try:
+    path = os.environ.get("AAW_BRIDGE_WORKSPACES")
+    if path:
+        ws = json.load(open(os.path.expanduser(path), encoding="utf-8"))
+        for chat, v in (ws.get("chats") or {}).items():
+            cwd = str(v.get("cwd") or "")
+            if cwd:
+                names[chat] = title_of(cwd)
+except Exception:
+    pass
+
+rows = []
+for f in glob.glob("/tmp/.claude_card_*.json"):
+    try:
+        d = json.load(open(f, encoding="utf-8"))
+    except Exception:
+        continue
+    age = time.time() - d.get("t0", 0)
+    if d.get("terminal") == "done" and age > 6 * 3600:
+        continue
+    chat = d.get("chat", "")
+    group = names.get(chat) or (f"群 …{chat[-6:]}" if chat else "私聊或未绑定的群")
+    state = {"done": "已结束", "stale": "超过 30 分钟没有收尾信号，可能已中断"}.get(d.get("terminal"), "进行中")
+    line = f"- {group}｜{state}｜任务：{d.get('name', '')}｜{d.get('msg', '')}"
+    if not d.get("terminal"):
+        line += f"｜已用时 {int(age // 60)} 分 {int(age % 60)} 秒"
+        if d.get("act"):
+            line += f"｜当前动作：{d['act']}（{int(time.time() - d.get('act_ts', time.time()))} 秒前）"
+    rows.append((d.get("terminal") is not None, -d.get("t0", 0), line))
+if not rows:
+    print("各群现在都没有任务在跑（没有找到进度卡）。")
+else:
+    for _, _, line in sorted(rows):
+        print(line)

@@ -1,0 +1,3 @@
+- [写报告先给结论](feedback-conclusion-first.md) — ★必读：用户要求报告第一部分只写结论，过程和方法放后面
+- [续费率的分母](pointer-renewal-denominator.md) — 分母用当周到期订阅数；详细口径在知识库《续费率_到期口径_20260310.md》
+- [续费率下降分析](project-renewal-analysis.md) — 工作区 renewal-analysis；现状看它的 _status.md，结论看项目索引

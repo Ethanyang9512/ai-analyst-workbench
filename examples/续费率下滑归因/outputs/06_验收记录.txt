@@ -1,0 +1,2 @@
+# 验收记录（_acceptance/records.jsonl 里的一行；ts、epoch 是生成时的时间）
+{"ts": "2026-10-18 20:54:52", "epoch": 1792328092, "files": [{"path": "报告_v1.pdf", "sha256": "1742bf87437199593f1c5017a600c4abc61047a7158bd668265a4a73ff4f0ae2"}], "doc": "", "tier": "full", "pages": "全稿", "reader": "冷读通过，补了“首次续费”的首次解释", "visual": "4 张图看过，核了 12 个数，无必须改", "note": ""}

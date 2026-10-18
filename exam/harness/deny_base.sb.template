@@ -1,0 +1,73 @@
+;; 分析助手考场沙盒：公共规则模板（macOS sandbox-exec 用）。
+;; prep.py 把 @…@ 占位符换成本机路径，前面加 (version 1)(allow default)，后面拼上按本场考试生成的规则，写成 run/sandbox.sb。
+;; sandbox-exec 规则后写的优先：先整片挡，再单独放开要用的子目录。
+;; 只挡读、挡写线上文件；网络照常（模型调用要出网）。不许联网的工具由 run_case.sh 用 --disallowedTools 关掉。
+;;
+;; 占位符（下面规则里写成前后各带一个 @ 的大写名字；说明里不写 @，免得被一起替换）：
+;;   HOME / HOME_RE      主目录（_RE 是转义后放进正则用的写法）
+;;   RUNTIME             runtime 目录（钩子、workflow.md）：只读放开，不许写
+;;   WS_BASE             真实的工作区总目录：不许写
+;;   KB                  知识库：可读，不许写
+;;   PAIRS_ROOT          成对稿存放处（交付版和用户定稿都在里面）：挡读
+;;   EXAM_SRC            仓库里的 exam/ 目录（示例考卷的答案、打分脚本）：挡读
+;;   BACKUP              配置和工作区备份目录（里面可能有定稿的原样副本）：挡读
+;;   CLAUDE_TMP          Claude Code 给别的会话放临时输出的目录：挡读
+;;   EXAM_SLUG_RE        考场会话记录目录名的前缀（转义后），考场自己的会话记录不挡
+;;   PAPER_SOURCES       出题人列出的考卷来源目录（考卷是从哪些项目里取的）：整片挡读，每行一条规则
+;;   BRIDGE_RULES        桥的主目录（配置、密钥、日志、飞书附件）：设了 AAW_BRIDGE_HOME 才有
+;;   LARK_CLI_RULES      真 lark-cli 程序本体和包目录：挡读，考生只能用 PATH 最前面的假 lark-cli
+
+;; ===== 一、读：考卷来源、成对稿、仓库里的答案、备份、别的会话的临时输出 =====
+@PAPER_SOURCES@
+(deny file-read* (subpath "@PAIRS_ROOT@"))
+(deny file-read* (subpath "@EXAM_SRC@"))
+(deny file-read* (subpath "@BACKUP@"))
+(deny file-read* (subpath "@CLAUDE_TMP@"))
+
+;; ===== 二、读：桥的主目录（配置、密钥、备份、日志、飞书附件、桥程序）=====
+;; runtime 若在桥的主目录里，会单独放开，它的上级目录只放开“看属性”（不能列目录、不能读文件）：
+;; 否则 shell 的 cd 会报 Not a directory，run-hook.sh 第一句 cd "$(dirname "$0")" && pwd 失败，钩子静默放行——等于钩子没跑
+@BRIDGE_RULES@
+
+;; ===== 三、读：真 lark-cli（程序本体、npx 缓存里的副本、凭据目录）=====
+@LARK_CLI_RULES@
+(deny file-read* (regex #"^@HOME_RE@/\.npm/_npx/[^/]+/node_modules/@larksuite(/|$)"))
+(deny file-read* (regex #"^@HOME_RE@/\.npm/_npx/[^/]+/node_modules/\.bin/lark-cli$"))
+(deny file-read* (subpath "@HOME@/.lark-cli"))
+(deny file-read* (subpath "@HOME@/Library/Application Support/lark-cli"))
+
+;; ===== 四、读：所有历史会话记录（以前的会话可能读过、改过答案）=====
+;; 只挡会话记录 *.jsonl 和同名的会话子目录（子代理记录、工具结果）；memory 子目录照常可读。
+;; 考场自己的会话记录不挡。
+(deny file-read* (require-all
+  (regex #"^@HOME_RE@/\.claude/projects/[^/]+/[^/]+\.jsonl$")
+  (require-not (regex #"^@HOME_RE@/\.claude/projects/@EXAM_SLUG_RE@"))))
+(deny file-read* (require-all
+  (regex #"^@HOME_RE@/\.claude/projects/[^/]+/[0-9a-f]+-[0-9a-f]+-[0-9a-f]+-[0-9a-f]+-[0-9a-f]+(/|$)")
+  (require-not (regex #"^@HOME_RE@/\.claude/projects/@EXAM_SLUG_RE@"))))
+;; 其他会留下文件原文的地方：命令行输入历史、粘贴缓存、计划文件（file-history 按现有会话逐个挡，见第七段）
+(deny file-read* (literal "@HOME@/.claude/history.jsonl"))
+(deny file-read* (subpath "@HOME@/.claude/paste-cache"))
+(deny file-read* (subpath "@HOME@/.claude/plans"))
+
+;; ===== 五、写：线上文件一律不许改（技能、记忆、全局设置、子代理、runtime、各工作区、知识库、文稿目录）=====
+(deny file-write* (subpath "@HOME@/.claude/skills"))
+(deny file-write* (subpath "@HOME@/.agents"))
+(deny file-write* (subpath "@HOME@/.claude/agents"))
+(deny file-write* (require-all
+  (regex #"^@HOME_RE@/\.claude/projects/[^/]+/memory(/|$)")
+  (require-not (regex #"^@HOME_RE@/\.claude/projects/@EXAM_SLUG_RE@"))))
+(deny file-write* (literal "@HOME@/.claude/CLAUDE.md"))
+(deny file-write* (literal "@HOME@/.claude/settings.json"))
+(deny file-write* (literal "@HOME@/.claude/settings.local.json"))
+(deny file-write* (subpath "@RUNTIME@"))
+(deny file-write* (subpath "@WS_BASE@"))
+(deny file-write* (subpath "@KB@"))
+(deny file-write* (subpath "@HOME@/Documents"))
+;; 线上分析助手的进度卡状态和计时文件在 /tmp 下按群号命名；考场只许写自己假群号的那份（见第七段）
+(deny file-write* (literal "/private/tmp/.claude_task_start"))
+
+;; ===== 六、不许动桥：不许给沙盒外的进程发信号（杀不了线上桥），不许跑 launchctl =====
+(deny signal)
+(allow signal (target same-sandbox))
+(deny process-exec (literal "/bin/launchctl"))
