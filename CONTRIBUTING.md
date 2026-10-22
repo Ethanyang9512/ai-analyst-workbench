@@ -55,7 +55,7 @@
 1. **跑仓库自查**：`python3 tools/check_repo.py`。它查本机绝对路径、常见格式的密钥、断掉的链接、技能的头部信息和引用、两份需求包模板是否同步、有没有二进制文件。它也包含在 `run_all_tests.sh` 里。
 2. **查明文个人信息**：用数据包体检程序扫你改过或新加的文件所在的目录（手机号、身份证号、邮箱、口令）：
    ```bash
-   python3 skills/data-package-review/scripts/pkgcheck.py <要提交的目录>
+   python3 skills/ethan-data-package-review/scripts/pkgcheck.py <要提交的目录>
    ```
    不要整仓扫：测试文件故意造了假手机号、假口令来测检查程序，会被当成命中。
 3. **用你自己的敏感词表再扫一遍**：仓库自查只认格式，认不出业务内容。建议在本机维护一份敏感词表（你的公司名、同事名、表名、群名、项目代号……），只放在本机、不提交，提交前用它扫一遍要提交的文件，例如 `grep -rnFf ~/my-deny-words.txt <要提交的文件>`。
@@ -75,20 +75,20 @@ bash tools/run_all_tests.sh
 
 ```bash
 python3 tools/check_repo.py
-python3 skills/report-writing/tests/test_style_lint.py
-python3 skills/report-writing/tests/test_pairsnap.py
-python3 skills/report-writing/tests/test_trace_scan.py
-${AAW_PY:-python3} skills/report-writing/tests/test_figcheck.py       # 需要 matplotlib；没装会打印“跳过”
-${AAW_PY:-python3} skills/report-writing/tests/test_deckcheck.py -v   # PDF 那组要 PyMuPDF；没有就跳过并写明
-${AAW_PY:-python3} skills/slide-deck/tests/test_check_deck.py -v      # 需要 python-pptx
-python3 skills/data-package-review/tests/test_pkgcheck.py
+python3 skills/ethan-report-writing/tests/test_style_lint.py
+python3 skills/ethan-report-writing/tests/test_pairsnap.py
+python3 skills/ethan-report-writing/tests/test_trace_scan.py
+${AAW_PY:-python3} skills/ethan-report-writing/tests/test_figcheck.py       # 需要 matplotlib；没装会打印“跳过”
+${AAW_PY:-python3} skills/ethan-report-writing/tests/test_deckcheck.py -v   # PDF 那组要 PyMuPDF；没有就跳过并写明
+${AAW_PY:-python3} skills/ethan-slide-deck/tests/test_check_deck.py -v      # 需要 python-pptx
+python3 skills/ethan-data-package-review/tests/test_pkgcheck.py
 python3 runtime/hooks/test_guard.py
 python3 runtime/hooks/test_gate.py
 python3 runtime/hooks/test_remind.py
 python3 runtime/hooks/test_progress.py
 python3 runtime/tools/test_accept_record.py
 python3 runtime/test_status_preview.py
-python3 skills/optimization-modeling/examples/allocation_pulp.py     # 装了 pulp 时
+python3 skills/ethan-optimization-modeling/examples/allocation_pulp.py     # 装了 pulp 时
 bash runtime/doctor.sh            # 在已装好并登录 Claude Code 的电脑上、用临时的 AAW_* 环境跑，应只报“关注”
 ```
 

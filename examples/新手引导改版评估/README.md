@@ -33,7 +33,7 @@ python3 analysis/readout.py
 | 告诉读者还要多久才能下结论 | 报告骨架第三章 | “分辨不出”之后，读者最想知道的是下一步怎么办 |
 | 看起来很诱人的分组差异，只描述不下结论 | 报告骨架第四章 | 老设备 +1.6pt 是看完数据才挑出来的，区间也跨过了 0 |
 
-用到的技能：`analysis-brief`（五要素和事先登记）、`pyramid-storyline` 的「分析类汇报的四条」和 `references/readout-rules.md`（实验读数的结构、决策四档）、`report-writing`（写正文）、`critical-review`（交付前攻一遍）。
+用到的技能：`ethan-analysis-brief`（五要素和事先登记）、`ethan-pyramid-storyline` 的「分析类汇报的四条」和 `references/readout-rules.md`（实验读数的结构、决策四档）、`ethan-report-writing`（写正文）、`ethan-critical-review`（交付前攻一遍）。
 
 ## 目录里的文件
 

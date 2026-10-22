@@ -1,7 +1,0 @@
-# optimization-modeling 的依赖：python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-# PuLP 固定 3.x：4.0 改了建变量的写法，examples/ 和常见写法都是 3.x。
-pulp>=3,<4
-highspy          # HiGHS 求解器；规模大、慢时用 pulp.HiGHS(msg=False)，没装就用 PuLP 自带的 CBC
-ortools          # CP-SAT：排班、指派、装箱
-pandas
-openpyxl

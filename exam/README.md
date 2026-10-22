@@ -58,7 +58,7 @@ bash exam/harness/cleanup.sh --yes
 
 ## 出考卷
 
-1. **攒成对稿**。用户每次手改定稿后，用 `skills/report-writing/scripts/pairsnap.py save` 存一份“交付版 → 定稿”，它会算手改比例，并且**每 3 份新稿留 1 份当考题**（`heldout`）：从考题提取的改法写到哪里（台账、约定页、术语表、状态、记忆、生成源）都标「考题来源」，考试时这些地方一起遮掉，不然等于把答案写进了规则。
+1. **攒成对稿**。用户每次手改定稿后，用 `skills/ethan-report-writing/scripts/pairsnap.py save` 存一份“交付版 → 定稿”，它会算手改比例，并且**每 3 份新稿留 1 份当考题**（`heldout`）：从考题提取的改法写到哪里（台账、约定页、术语表、状态、记忆、生成源）都标「考题来源」，考试时这些地方一起遮掉，不然等于把答案写进了规则。
 2. **转成纯文本**。飞书文档用 `scoring/feishu2md.py` 把两版转成同一套写法，`diff` 才干净。放进一个考卷目录，命名 `delivered.md`、`final.md`。
 3. **切块**。`python3 scoring/finalize.py --paper <考卷目录>`：没有 `spec.json` 时只写 `blocks_draft.json`。切法：行级比对 → 改写行再按字符切，相距 8 字以内的并成一处；整章删除算 1 块；同一张表里的改动合成 1 块；删掉又在别处出现的记“调序”。
 4. **逐块分类**，写 `spec.json`：

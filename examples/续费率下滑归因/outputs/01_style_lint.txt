@@ -1,5 +1,5 @@
 # 硬禁词检查：交付版里 4 处
-$ python3 skills/report-writing/scripts/style_lint.py exam/example-paper/delivered.md
+$ python3 skills/ethan-report-writing/scripts/style_lint.py exam/example-paper/delivered.md
 == exam/example-paper/delivered.md  硬禁 4 / 警告 0 ==
   [硬禁] L9 「断崖式」→ 下降，并写出幅度   | **结论：续费率从 W5 的 80.8% 断崖式下跌到 W6 的 76.98%，比 W5 低 3.78pt，我们认为主要
   [硬禁] L9 「我们认为」→ 数据显示   | **结论：续费率从 W5 的 80.8% 断崖式下跌到 W6 的 76.98%，比 W5 低 3.78pt，我们认为主要

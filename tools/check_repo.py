@@ -10,7 +10,7 @@
      读的人才知道没装仓库时可以忽略。
   4. 所有 .md 里的相对链接 `](…)` 指向存在的文件或目录。
   5. 没有写死的本机绝对路径（macOS、Linux 的用户主目录，Windows 的 C 盘用户目录）。
-  6. templates/fetch-request/ 和 skills/data-package-review/assets/ 里的同名模板逐字一致；仓库里没有二进制文件。
+  6. templates/fetch-request/ 和 skills/ethan-data-package-review/assets/ 里的同名模板逐字一致；仓库里没有二进制文件。
   7. 没有常见格式的密钥（OpenAI/Anthropic 风格的 sk- 串、GitHub 令牌、AWS 访问密钥、私钥头）。
 它查不了业务内容是否脱敏：公司名、同事名、表名这类词，请用你自己本机的敏感词表另扫（见 CONTRIBUTING.md）。
 """
@@ -116,11 +116,11 @@ for path in walk():
                 if t and not os.path.exists(os.path.join(os.path.dirname(path), t)):
                     problems.append(f"{r}:{ln}：链接指向不存在的 {target}")
 
-tpl, assets = os.path.join(ROOT, "templates", "fetch-request"), os.path.join(skills_dir, "data-package-review", "assets")
+tpl, assets = os.path.join(ROOT, "templates", "fetch-request"), os.path.join(skills_dir, "ethan-data-package-review", "assets")
 for f in sorted(os.listdir(assets)):
     a, b = os.path.join(assets, f), os.path.join(tpl, f)
     if os.path.exists(b) and open(a, encoding="utf-8").read() != open(b, encoding="utf-8").read():
-        problems.append(f"skills/data-package-review/assets/{f} 和 templates/fetch-request/{f} 不一致：改一处要同步另一处")
+        problems.append(f"skills/ethan-data-package-review/assets/{f} 和 templates/fetch-request/{f} 不一致：改一处要同步另一处")
 
 if problems:
     print(f"仓库自查：{len(problems)} 处问题")

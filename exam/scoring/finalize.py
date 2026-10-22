@@ -14,7 +14,7 @@
                  A 类块必须引用至少一条规则；生成时逐条核对原句确实在规则文件里，对不上就报错退出。
 
 --corpus  规则和记忆的原文（技能 md、台账、记忆文件），用来剔除“考生照规则改也写得出来”的片段；不给就只用 rules.json 引到的文件。
---lexicon 写作台账（如 skills/report-writing/references/style-lexicon.md）：给了就统计“一、硬禁”表里的词在交付版、定稿里各出现几次。
+--lexicon 写作台账（如 skills/ethan-report-writing/references/style-lexicon.md）：给了就统计“一、硬禁”表里的词在交付版、定稿里各出现几次。
 --sources 考卷所在的真实项目目录：每条“定稿独有片段”会列出这些目录里哪些文件也含这段字（多是定稿回读、改稿后的构建脚本），
           开考前要把这些文件一并挡住，否则这条片段不能当泄题证据。
 

@@ -15,7 +15,7 @@
 不用装任何依赖，在仓库根目录跑：
 
 ```bash
-python3 skills/report-writing/scripts/style_lint.py exam/example-paper/delivered.md
+python3 skills/ethan-report-writing/scripts/style_lint.py exam/example-paper/delivered.md
 python3 examples/续费率下滑归因/analysis/recompute.py
 ```
 
@@ -156,6 +156,19 @@ flowchart TD
 
 ## 快速开始
 
+### 方式零：用 Claude Code 插件装（一分钟）
+
+只想用技能、不需要考场和飞书运行时，在 Claude Code 里输入：
+
+```
+/plugin marketplace add Ethanyang9512/ai-analyst-workbench
+/plugin install ethan-analyst@ethan-skills
+```
+
+装上的是 11 个 `ethan-` 技能和 2 位验收员。插件里的技能调用时带插件名前缀，例如 `/ethan-analyst:ethan-critical-review`；平时直接说需求，Claude 会按描述自己选技能。以后更新用 `/plugin marketplace update ethan-skills`。
+
+技能名统一用 `ethan-` 开头，方便和你自己的、别处装来的技能区分。
+
 ### 方式一：只装技能（几分钟）
 
 适合只在终端里用 Claude Code。需要先装好并登录 Claude Code，以及 Python 3.9 以上。
@@ -177,7 +190,7 @@ bash tools/run_all_tests.sh         # 最后一行是“全部通过”就行（
    ```
    不设也能用，技能会跳过“查知识库”这一步。
 3. 新建一个项目文件夹，复制 [templates/workspace/](templates/workspace/) 里的 `_status.md`、`_CONVENTIONS.md`、`_glossary.md`。
-4. 在这个文件夹里启动 `claude`，试一句：“用 analysis-brief 帮我开一个新分析：……”。
+4. 在这个文件夹里启动 `claude`，试一句：“用 ethan-analysis-brief 帮我开一个新分析：……”。
 
 Windows 的复制命令、检查程序要装的 Python 库（`pip install -r requirements-dev.txt`），见 [docs/08](docs/08-安装与配置.md)。
 
@@ -196,7 +209,7 @@ Windows 的复制命令、检查程序要装的 Python 库（`pip install -r req
 
 - **样本小。** 这是一位分析师的个人工作流整理出来的；文中的考试结果只有一个人的稿子，而且是开卷（考卷正是新规则的出处），只能看方向。
 - **默认面向中文、飞书和 Claude Code。** 换别的聊天工具要自己接桥；写作规范是中文的。
-- **公司专属的部分要你自己补。** 取数技能、口径技能、知识库内容都只有模板；`slide-deck` 只带规则和检查程序，没有现成的母版，母版用你自己的 .pptx。
+- **公司专属的部分要你自己补。** 取数技能、口径技能、知识库内容都只有模板；`ethan-slide-deck` 只带规则和检查程序，没有现成的母版，母版用你自己的 .pptx。
 - **护栏不是安全边界。** 钩子只认明显的写法，挡不住刻意绕过，不能替代你对数据权限和账号安全的管理。
 - **依赖 Claude Code 的机制。** 钩子、子代理、设置文件的行为可能随版本变化；文中“关掉后台运行”“改了规则要 `/new`”这类做法来自作者在当时版本上的实测。
 - **适用前提：** 你有一台能运行 Claude Code 的电脑（Mac、Linux 或 Windows），并且有权限拿到要分析的数据：自己取，或者经取数助手取。

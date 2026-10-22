@@ -1,5 +1,5 @@
 # 数据包体检：说明里写已修复，数据文件指纹没变（退出码 3）
-$ python3 skills/data-package-review/scripts/pkgcheck.py round2 --prev round1
+$ python3 skills/ethan-data-package-review/scripts/pkgcheck.py round2 --prev round1
 取数助手回包体检：<临时目录>/round2
 上一轮：<临时目录>/round1
 修改说明：没给 --report，读的是本轮包里新增或改动过的 md/txt 里新出现的句子；找到"已修复"类说法 1 处，新增修复类文件 0 个

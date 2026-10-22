@@ -6,6 +6,16 @@
 
 （还没有。）
 
+## [0.2.0] - 2026-10-22
+
+### 变更
+
+- 11 个技能统一加 `ethan-` 前缀，便于和其他来源的技能区分、单独上架到技能市场。改前 `critical-review`，改后 `ethan-critical-review`，其余同理。目录名、`name` 字段、技能之间的互相引用、文档、测试脚本已同步。**升级提示**：用 `tools/install.sh` 装过 0.1.0 的，`~/.claude/skills/` 里的旧名目录不会自动删除，请手动删掉，免得同一个技能出现两份。
+
+### 新增
+
+- `.claude-plugin/marketplace.json`：可以在 Claude Code 里用 `/plugin marketplace add Ethanyang9512/ai-analyst-workbench` 加入，再 `/plugin install ethan-analyst@ethan-skills` 一步装好全部技能和验收员。
+
 ## [0.1.0] - 2026-10-18
 
 首次公开发布。
@@ -22,5 +32,6 @@
 - 文档 10 篇，含设计取舍与替代方案、踩坑清单；英文入口 `README.en.md`。
 - 工具：`tools/install.sh`（安装并备份同名旧版本）、`tools/check_repo.py`（仓库自查）、`tools/run_all_tests.sh`；GitHub Actions 在 Ubuntu 和 macOS 上跑测试。
 
-[未发布]: https://github.com/Ethanyang9512/ai-analyst-workbench/compare/v0.1.0...HEAD
+[未发布]: https://github.com/Ethanyang9512/ai-analyst-workbench/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Ethanyang9512/ai-analyst-workbench/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Ethanyang9512/ai-analyst-workbench/releases/tag/v0.1.0

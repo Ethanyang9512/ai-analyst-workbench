@@ -1,5 +1,5 @@
 # 按本项目约定页查：禁用词、同一个东西几种写法
-$ python3 skills/report-writing/scripts/deckcheck.py text exam/example-paper/delivered.md --conv examples/续费率下滑归因/_CONVENTIONS.md
+$ python3 skills/ethan-report-writing/scripts/deckcheck.py text exam/example-paper/delivered.md --conv examples/续费率下滑归因/_CONVENTIONS.md
 deckcheck text delivered.md（1 张）；约定：examples/续费率下滑归因/_CONVENTIONS.md
 必须改 5 处，建议核对 0 处
 [必须改] 未分页部分｜不用的词：值得注意的是，续费率的分母是当周到期… → 删掉『值得注意的是』或换个说法（用户 03-12 第二次删掉）

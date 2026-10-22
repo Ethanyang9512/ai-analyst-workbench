@@ -1,0 +1,20 @@
+{
+  "name": "ethan-skills",
+  "description": "分析师的 AI 工作台：ethan- 系列技能（分析 brief、对抗式审查、金字塔故事线、报告写作、汇报片、可复核分析、优化建模等）",
+  "owner": {
+    "name": "Ethanyang9512",
+    "url": "https://github.com/Ethanyang9512"
+  },
+  "plugins": [
+    {
+      "name": "ethan-analyst",
+      "source": "./",
+      "description": "ethan- 系列 11 个分析技能和 2 个验收员子代理：从开题 brief、取数、写报告、出汇报片到交付前审查",
+      "version": "0.2.0",
+      "license": "MIT AND CC-BY-4.0",
+      "homepage": "https://github.com/Ethanyang9512/ai-analyst-workbench",
+      "keywords": ["analytics", "business-intelligence", "report-writing", "agent-skills"],
+      "strict": false
+    }
+  ]
+}

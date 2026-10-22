@@ -54,7 +54,7 @@ CONTEXT = [   # (命令, cwd, 应当命中的规则；None 表示放行)
      WS, None),
     ("echo ok > _status.md; mkdir -p _acceptance; cat > ~/.claude/projects/demo/memory/x.md <<'EOF'\nhi\nEOF",
      WS, None),
-    ("cp ~/.claude/skills/report-writing/scripts/figcheck.py . && python3 figcheck.py > out.txt 2>&1", WS, None),
+    ("cp ~/.claude/skills/ethan-report-writing/scripts/figcheck.py . && python3 figcheck.py > out.txt 2>&1", WS, None),
     ("lark-cli im +messages-send --as bot --chat-id " + CHAT + " --text '请运行 rm ~/.claude/settings.json'", WS, None),
     ("echo a#b > notes.md", WS, None),
     ("python3 " + RT + "/hooks/test_guard.py > /tmp/g.txt", WS, None),

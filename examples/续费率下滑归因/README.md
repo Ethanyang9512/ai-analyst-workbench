@@ -46,7 +46,7 @@ python3 analysis/recompute.py
 
 > 我的理解：查续费率 W6 起下降的原因，分清是主动取消还是扣款失败、集中在哪类订阅，周会前给一份报告；不分析新购，不做 PPT。先开题，有一个问题要确认：分母用当周到期的订阅数可以吗？
 
-## 第 2 步：开题（`analysis-brief`）
+## 第 2 步：开题（`ethan-analysis-brief`）
 
 分析助手按五要素写 [brief.md](brief.md)：背景、要回答的问题、交付形式、限制、检查点。动手之前，先叫一个子代理**只攻分析设计**（不碰数据），攻出四条。最要紧的两条：
 
@@ -55,7 +55,7 @@ python3 analysis/recompute.py
 
 用户确认分母后，这一条当轮写进 [_CONVENTIONS.md](_CONVENTIONS.md) 第 3 条。口径类的决定第一次就写；用词类的纠正，第二次出现才写。
 
-## 第 3 步：给取数助手的需求（`data-package-review`）
+## 第 3 步：给取数助手的需求（`ethan-data-package-review`）
 
 取数助手负责写 SQL、跑数、交数据包，可以是同一台电脑上另一个智能体会话，也可以是同事。新专题的第一份需求写成 [取数字段清单.md](取数字段清单.md)，**一次要齐后面可能要切的维度**：方案、首次/多次续费、渠道都要了，渠道是预留的，之后换角度在本机算。清单里还专门写了一条“时间字段统一成本地时间”，因为扣款流水默认是 UTC。
 
@@ -63,7 +63,7 @@ python3 analysis/recompute.py
 
 > 给取数助手：需求包_v1_20260310.md。还需要取数助手做的事：有（已写在包里）。
 
-取数助手按 `reproducible-analysis` 交 SQL：一步一个文件、带 header 注释（口径和过滤原因写在注释里）、变更记进 [sql/_CHANGELOG.md](sql/_CHANGELOG.md)。
+取数助手按 `ethan-reproducible-analysis` 交 SQL：一步一个文件、带 header 注释（口径和过滤原因写在注释里）、变更记进 [sql/_CHANGELOG.md](sql/_CHANGELOG.md)。
 
 ## 第 4 步：审数据包
 
@@ -74,11 +74,11 @@ python3 analysis/recompute.py
 
 两条都在本机处理，**不拉取数助手全量重做**。没有实质问题，审核就结束，不固定轮次。
 
-## 第 5 步：先亮骨架，再写正文（`pyramid-storyline` → `report-writing`）
+## 第 5 步：先亮骨架，再写正文（`ethan-pyramid-storyline` → `ethan-report-writing`）
 
 分析助手先给用户看 [报告骨架.md](报告骨架.md)：每章只有一句结论和图标题。**通读测试**：只读每章那一句，就能把事情讲完。
 
-骨架里最关键的一句来自 `analysis/recompute.py` 的拆解：W5 到 W6 下降 3.8pt，其中构成变化拉低 2.3pt（首次续费占比从 21.1% 升到 29.0%），各类续费率变化拉低 1.5pt（全部来自月付；年付没涨价，续费率没变）。用户确认后，分析助手按 `report-writing` 写正文、按图表规范出图，得到报告第一版（[交付版](../../exam/example-paper/delivered.md)）。
+骨架里最关键的一句来自 `analysis/recompute.py` 的拆解：W5 到 W6 下降 3.8pt，其中构成变化拉低 2.3pt（首次续费占比从 21.1% 升到 29.0%），各类续费率变化拉低 1.5pt（全部来自月付；年付没涨价，续费率没变）。用户确认后，分析助手按 `ethan-report-writing` 写正文、按图表规范出图，得到报告第一版（[交付版](../../exam/example-paper/delivered.md)）。
 
 ## 第 6 步：交付前验收
 
@@ -107,7 +107,7 @@ lark-cli im +messages-send --as bot --chat-id <本轮 chatId> --file 报告_v1.p
 ## 第 8 步：存成对快照，纠正当轮沉淀
 
 ```bash
-python3 ~/.claude/skills/report-writing/scripts/pairsnap.py save --project renewal-analysis --doc 续费率报告 \
+python3 ~/.claude/skills/ethan-report-writing/scripts/pairsnap.py save --project renewal-analysis --doc 续费率报告 \
         --delivered 报告_v1.md --final 报告_v2.md
 ```
 

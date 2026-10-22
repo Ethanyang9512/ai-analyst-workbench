@@ -29,7 +29,7 @@ BASE = (
     "3. 用大白话；术语首次出现要解释；不自造概念。"
 )
 DOC = (
-    "\n4. 本轮如果要新写或修改文档、图表、PPT：先加载 report-writing 和 pyramid-storyline（做 PPT 再加 slide-deck），"
+    "\n4. 本轮如果要新写或修改文档、图表、PPT：先加载 ethan-report-writing 和 ethan-pyramid-storyline（做 PPT 再加 ethan-slide-deck），"
     "对照用户认可过的稿子；新写的先给故事线骨架；新做的图默认要可编辑。"
     "只是发送、查看或讨论现成的稿子时，不用加载，也不顺手重做。"
     "改稿按 workflow.md 的分档验收：先跑 deckcheck.py scope 和 accept_record.py status 定档。"
@@ -45,7 +45,7 @@ FULL_WORDS = re.compile(
     r"|(?:发送|转发|发|交|转)(?:给|到)?(?:领导|老板|业务|大家|别人|同事)|给(?:领导|老板)(?:看|过目)")
 # 《会前追问清单》：只在说要汇报、汇报前、拿去汇报、向领导汇报、给领导看、发（送）给或转给领导、老板时提醒
 # （通读、全面检查、定稿只触发全稿验收）。这几种说法都在 FULL_WORDS 里，所以只在全稿验收也触发时才看它。
-ASK = "回复末尾附《会前追问清单》（见 pyramid-storyline 的「会前追问清单」一节），不另发文件。"
+ASK = "回复末尾附《会前追问清单》（见 ethan-pyramid-storyline 的「会前追问清单」一节），不另发文件。"
 ASK_WORDS = re.compile(r"要汇报|汇报之?前|拿去汇报|(?:向|跟)(?:领导|老板)汇报|给领导看|(?:发送|转发|发|转)给(?:领导|老板)")
 # 否定的判法（按审查员造的口语句子改过一轮）：按分句看——
 CLAUSE = re.compile(r"[，。！？；,.!?;：:\n]|但是|但|可是|不过")        # 分句的边界

@@ -15,7 +15,7 @@ Most of the documentation, skill text and examples are in Chinese. This page is 
 No dependencies needed. From the repository root:
 
 ```bash
-python3 skills/report-writing/scripts/style_lint.py exam/example-paper/delivered.md
+python3 skills/ethan-report-writing/scripts/style_lint.py exam/example-paper/delivered.md
 python3 examples/续费率下滑归因/analysis/recompute.py
 ```
 
@@ -56,17 +56,17 @@ Trade-offs behind each design (what was rejected, what it costs, when to switch)
 
 | Skill | Use it when |
 |---|---|
-| `analysis-brief` | Starting a new analysis: five-element brief, attack the analysis design before pulling data |
-| `reproducible-analysis` | Any analysis: versioned step-by-step SQL with rationale headers, formulas kept in Excel, charts that can be redrawn |
-| `pyramid-storyline` | Before writing a report or deck: answer-first skeleton, one lead sentence per chapter, how to explain a metric change |
-| `report-writing` | Writing business-facing reports; ships five check scripts (banned phrases, chart overlap, internal traces, slide checks, paired-draft snapshots) |
-| `slide-deck` | Formal PPTX decks with python-pptx; ships `check_deck.py` |
-| `optimization-modeling` | Allocation, scheduling, bin-packing with PuLP / OR-Tools, with baseline and sensitivity |
-| `critical-review` | Default quality gate before shipping: first principles plus adversarial review, findings rated P1/P2/P3 |
-| `data-package-review` | Reviewing a data package from another agent or colleague; writing the data request |
-| `executive-summary` | Only when an executive summary / SCQA is explicitly requested |
-| `feishu-delivery` | Sending finished work to Feishu/Lark safely (bot identity, target, receipts, no echo loops) |
-| `workbench-maintenance` | Updating Claude Code, health checks, local configuration backup |
+| `ethan-analysis-brief` | Starting a new analysis: five-element brief, attack the analysis design before pulling data |
+| `ethan-reproducible-analysis` | Any analysis: versioned step-by-step SQL with rationale headers, formulas kept in Excel, charts that can be redrawn |
+| `ethan-pyramid-storyline` | Before writing a report or deck: answer-first skeleton, one lead sentence per chapter, how to explain a metric change |
+| `ethan-report-writing` | Writing business-facing reports; ships five check scripts (banned phrases, chart overlap, internal traces, slide checks, paired-draft snapshots) |
+| `ethan-slide-deck` | Formal PPTX decks with python-pptx; ships `check_deck.py` |
+| `ethan-optimization-modeling` | Allocation, scheduling, bin-packing with PuLP / OR-Tools, with baseline and sensitivity |
+| `ethan-critical-review` | Default quality gate before shipping: first principles plus adversarial review, findings rated P1/P2/P3 |
+| `ethan-data-package-review` | Reviewing a data package from another agent or colleague; writing the data request |
+| `ethan-executive-summary` | Only when an executive summary / SCQA is explicitly requested |
+| `ethan-feishu-delivery` | Sending finished work to Feishu/Lark safely (bot identity, target, receipts, no echo loops) |
+| `ethan-workbench-maintenance` | Updating Claude Code, health checks, local configuration backup |
 
 ### Examples
 
@@ -76,6 +76,15 @@ Trade-offs behind each design (what was rejected, what it costs, when to switch)
 | [Onboarding A/B test readout](examples/新手引导改版评估/) | Pre-registered decision rules; how to report an inconclusive result; how much more data is needed; why a tempting post-hoc subgroup is not a conclusion |
 
 ## Quick start
+
+Fastest route, skills and reviewer agents only, inside Claude Code:
+
+```
+/plugin marketplace add Ethanyang9512/ai-analyst-workbench
+/plugin install ethan-analyst@ethan-skills
+```
+
+All skill names start with `ethan-` so they don't collide with your own skills. For the full setup (tests, templates, exam, Feishu runtime):
 
 Requirements: Claude Code installed and logged in, Python 3.9+.
 

@@ -64,7 +64,7 @@ GROUP BY s.subscription_id, s.period_no, s.plan, s.expire_date;
 
 - 换方案：加 `AND s.plan IN (...)`，输出里保留 `plan` 这一列。
 - 换时间窗：只改 `${start_date}`、`${end_date}`，不要改成按购买日筛。
-- 要按渠道看：加 `s.channel` 一列，不要在 SQL 里 `GROUP BY` 渠道（聚合留给后面，见 `reproducible-analysis` 的“不过度聚合”）。
+- 要按渠道看：加 `s.channel` 一列，不要在 SQL 里 `GROUP BY` 渠道（聚合留给后面，见 `ethan-reproducible-analysis` 的“不过度聚合”）。
 
 ## 每期刷新清单
 
