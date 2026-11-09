@@ -8,7 +8,7 @@ bash examples/续费率下滑归因/outputs/regenerate.sh
 
 | 文件 | 哪个程序 | 演示什么 |
 |---|---|---|
-| [01_style_lint.txt](01_style_lint.txt) | `ethan-report-writing/scripts/style_lint.py` | 交付版里 4 处硬禁词，退出码 1，交付前必须改到 0 |
+| [01_style_lint.txt](01_style_lint.txt) | `ethan-report-writing/scripts/style_lint.py` | 交付版里 4 处硬禁词，退出码 1，交付前必须改到 0；另有 1 处防御性写法的警告，人工判断 |
 | [02_trace_scan.txt](02_trace_scan.txt) | `ethan-report-writing/scripts/trace_scan.py` | 给业务看的稿子里出现了协作方名字和“回包” |
 | [03_deckcheck_text.txt](03_deckcheck_text.txt) | `ethan-report-writing/scripts/deckcheck.py text` | 读本项目 `_CONVENTIONS.md` 的 json 块：用户纠正过两次的词，下一次由程序拦下 |
 | [04_pkgcheck_说改了没重跑.txt](04_pkgcheck_说改了没重跑.txt) | `ethan-data-package-review/scripts/pkgcheck.py` | 第 2 轮说明里写“已修复”，数据文件指纹却没变，退出码 3 |

@@ -10,7 +10,7 @@
       "name": "ethan-analyst",
       "source": "./",
       "description": "ethan- 系列 11 个分析技能和 2 个验收员子代理：从开题 brief、取数、写报告、出汇报片到交付前审查",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "license": "MIT AND CC-BY-4.0",
       "homepage": "https://github.com/Ethanyang9512/ai-analyst-workbench",
       "keywords": ["analytics", "business-intelligence", "report-writing", "agent-skills"],

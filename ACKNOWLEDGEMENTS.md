@@ -17,6 +17,7 @@
 |---|---|---|
 | 论文《Skill Training with Corruption and Reconstruction Loop》 | [docs/07 先考试再上线](docs/07-先考试再上线.md) 的方法来源。只借思路，没有复制代码 | https://arxiv.org/abs/2607.27557 |
 | Andrej Karpathy 对大模型写代码常见失误的公开观察，以及社区据此整理的 CLAUDE.md | [templates/global-CLAUDE.md](templates/global-CLAUDE.md) 开头的四条底线（中文转述） | 社区整理版之一：https://github.com/multica-ai/andrej-karpathy-skills |
+| 开源技能 anti-defensive-writing（Adkid-Zephyr、Kiterlin 两个版本） | [ethan-report-writing](skills/ethan-report-writing/SKILL.md)「限定、待确认、备选数：只留必要的」一节的思路来源：限定要过“删掉它，读者会不会改变判断”这一关，留下的只写一次。只借思路，没有复制文字 | https://github.com/Adkid-Zephyr/anti-defensive-writing-Skill 、https://github.com/Kiterlin/anti-defensive-writing |
 | 金字塔原理与 SCQA（Barbara Minto）、《Say It With Charts》（Gene Zelazny）、《Storytelling with Data》（Cole Nussbaumer Knaflic）、Stephen Few 的图表设计著作、Andrew Abela 的 Chart Chooser、IBCS 国际商务沟通标准 | 汇报骨架和选图方法，见 [skills/ethan-pyramid-storyline/references/](skills/ethan-pyramid-storyline/references/) | 公开出版物，请检索原书 |
 
 ## 检查程序和示例用到的第三方库

@@ -192,6 +192,30 @@ class TestPlaceholderOnlyCell(LintCase):
         self.assertNoHit(u"普通文字 123，第三章。\n")
 
 
+class TestDefensiveWarnings(unittest.TestCase):
+    """防御性写法只给警告，不算硬禁；一行写清的“原因待××确认”不报。"""
+
+    def lint(self, text):
+        fd, path = tempfile.mkstemp(suffix=".md")
+        with io.open(fd, "w", encoding="utf-8") as f:
+            f.write(text)
+        try:
+            return style_lint.lint_file(path, [])
+        finally:
+            os.remove(path)
+
+    def test_defensive_phrases_warn(self):
+        for text in (u"该结论尚未书面确认。\n", u"折算系数需业务确认。\n", u"这一项需要业务确认。\n", u"请业务确认我们的理解。\n",
+                     u"口径待业务确认。\n", u"尽管样本有局限，结论仍成立。\n"):
+            hard, warn = self.lint(text)
+            self.assertEqual(hard, [], text)
+            self.assertTrue(any(u"防御性写法" in w[2] for w in warn), text)
+
+    def test_plain_pending_line_not_warned(self):
+        hard, warn = self.lint(u"原因待产品团队确认。\n原因待业务确认。\n按业务说法，口径不变。\n本周续费率提升 0.4pt。\n")
+        self.assertFalse(any(u"防御性写法" in w[2] for w in warn), warn)
+
+
 class TestCli(LintCase):
     """把脚本拷进临时目录，让它读夹具台账，验证退出码和输出格式。"""
 

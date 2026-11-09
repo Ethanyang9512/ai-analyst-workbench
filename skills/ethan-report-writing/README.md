@@ -15,7 +15,7 @@
 
 | 程序 | 查什么 | 用法 | 依赖 |
 |---|---|---|---|
-| `scripts/style_lint.py` | 硬禁词（读 `references/style-lexicon.md` 的「一、硬禁」表）和三条警告 | `python3 scripts/style_lint.py 稿件.md [更多稿件]`；有硬禁命中退出 1 | 标准库 |
+| `scripts/style_lint.py` | 硬禁词（读 `references/style-lexicon.md` 的「一、硬禁」表）和四条警告 | `python3 scripts/style_lint.py 稿件.md [更多稿件]`；有硬禁命中退出 1 | 标准库 |
 | `scripts/figcheck.py` | 出图的文字重叠、折线穿字、文字出界或被裁 | `python3 scripts/figcheck.py 出图脚本.py`（不用改脚本），或在脚本里 `save_checked(fig, path)` | matplotlib、numpy |
 | `scripts/trace_scan.py` | 给读者的稿子里不该有的内部痕迹：协作方名字、过程用词、本机路径、轮次号 | `python3 scripts/trace_scan.py 稿件.md 片子.pptx [--allow 词] [--names 你的协作方名字]`；有命中退出 1 | 标准库 |
 | `scripts/deckcheck.py` | 飞书幻灯片快照（xml/json/md）和导出的 PDF：不用的词、系统原名、对象编号、页码引用、拆词、出界；`scope` 算出这次改了哪几页、该请验收员看哪几页 | `${AAW_PY:-python3} scripts/deckcheck.py text|pdf|scope …`；0 通过 / 1 有必须改 / 2 没查成 | text、scope 用标准库；pdf 要 PyMuPDF |

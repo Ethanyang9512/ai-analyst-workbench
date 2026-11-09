@@ -21,7 +21,7 @@ run() {  # run <输出文件> <说明> <命令…>：把命令行、输出和退
 }
 
 # 1. 写作检查：交付版（exam/example-paper/delivered.md）里的硬禁词和内部痕迹
-run 01_style_lint.txt "硬禁词检查：交付版里 4 处" \
+run 01_style_lint.txt "硬禁词检查：交付版里 4 处，另有 1 处防御性写法的警告" \
     "$PY" "$RW/style_lint.py" exam/example-paper/delivered.md
 run 02_trace_scan.txt "内部痕迹检查：交付版末尾那句提到了协作方和回包" \
     "$PY" "$RW/trace_scan.py" exam/example-paper/delivered.md

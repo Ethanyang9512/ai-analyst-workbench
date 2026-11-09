@@ -56,14 +56,14 @@ Trade-offs behind each design (what was rejected, what it costs, when to switch)
 
 | Skill | Use it when |
 |---|---|
-| `ethan-analysis-brief` | Starting a new analysis: five-element brief, attack the analysis design before pulling data |
+| `ethan-analysis-brief` | Starting a new analysis: five-element brief, write a storyline ledger and attack the analysis design before pulling data |
 | `ethan-reproducible-analysis` | Any analysis: versioned step-by-step SQL with rationale headers, formulas kept in Excel, charts that can be redrawn |
-| `ethan-pyramid-storyline` | Before writing a report or deck: answer-first skeleton, one lead sentence per chapter, how to explain a metric change |
+| `ethan-pyramid-storyline` | Before writing a report or deck: answer-first skeleton, storyline ledger, one lead sentence per chapter, how to explain a metric change, structure for diagnostic reports |
 | `ethan-report-writing` | Writing business-facing reports; ships five check scripts (banned phrases, chart overlap, internal traces, slide checks, paired-draft snapshots) |
 | `ethan-slide-deck` | Formal PPTX decks with python-pptx; ships `check_deck.py` |
 | `ethan-optimization-modeling` | Allocation, scheduling, bin-packing with PuLP / OR-Tools, with baseline and sensitivity |
 | `ethan-critical-review` | Default quality gate before shipping: first principles plus adversarial review, findings rated P1/P2/P3 |
-| `ethan-data-package-review` | Reviewing a data package from another agent or colleague; writing the data request |
+| `ethan-data-package-review` | Reviewing a data package from another agent or colleague; writing detailed data requests and fix instructions |
 | `ethan-executive-summary` | Only when an executive summary / SCQA is explicitly requested |
 | `ethan-feishu-delivery` | Sending finished work to Feishu/Lark safely (bot identity, target, receipts, no echo loops) |
 | `ethan-workbench-maintenance` | Updating Claude Code, health checks, local configuration backup |
