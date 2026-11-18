@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """PPT 交付前自检：① 文件完整性 ② 非法色值（另提示图表里配色表以外的颜色）③ 元素越界 ④ 文字块重叠
    ⑤ 术语黑名单 ⑥ 文字溢出 ⑦ 图表数据标签位置（dLblPos 按图表类型合法性——写错 PowerPoint 直接拒开文件）
-   可选 ⑧ OpenXML schema 校验 + 全片拼图预览（需要 officecli：`npm i -g @officecli/officecli`）。
+   ⑧ 柱图数值轴起点（原生柱形图、条形图的数值轴不从 0 起，小差别会被画成大差别）
+   可选 ⑨ OpenXML schema 校验 + 全片拼图预览（需要 officecli：`npm i -g @officecli/officecli`）。
    母版用你自己的 .pptx；页面尺寸从文件里读，不写死。
 
 用法::
@@ -86,6 +87,85 @@ def chart_dlblpos_issues(chart):
             if d.get("val") not in ok:
                 issues.append((kind, grouping, d.get("val"), ok))
     return issues
+
+
+BAR_TAGS = (C_NS + "barChart", C_NS + "bar3DChart")
+LINE_TAGS = (C_NS + "lineChart", C_NS + "line3DChart", C_NS + "areaChart", C_NS + "area3DChart")
+
+
+def _series_values(group):
+    """一组图（barChart、lineChart……）里每个系列的 {类目序号: 值}；读不出数的点跳过。"""
+    out = []
+    for ser in group.findall(C_NS + "ser"):
+        vals = {}
+        for pt in ser.findall(C_NS + "val//" + C_NS + "pt"):
+            v = pt.find(C_NS + "v")
+            try:
+                vals[int(pt.get("idx"))] = float(v.text)
+            except (TypeError, ValueError, AttributeError):
+                pass
+        out.append(vals)
+    return out
+
+
+def chart_axis_issues(chart):
+    """原生柱形图、条形图的数值轴是不是从 0 起。返回 [说明, ...]。
+    报两种：写明了大于 0 的最小值；没写最小值，而 PowerPoint 会自己把起点抬高。
+    PowerPoint 怎么定起点（用 PowerPoint 实测）：把挂在同一根数值轴上的点都算上——簇状柱是每根柱的值，
+    堆积柱是每一段叠到的高度（不是每类的总高，留空的段当 0），同一根轴上的折线、面积也算；最低的点大于 0、而且最高和最低相差
+    不到最高点的 1/6，起点就不在 0（差 17% 不抬，差 16% 抬）。只有一根柱、各点一样高时不抬。
+    不查：有负数的、百分比堆积、对数轴、用透明的下段托起来的区间条（每一类的下段都有值而且大于 0，本来就不是从 0 画起的柱）。
+    用透明下段拼的瀑布图照查：它的首尾两根下段是 0，PowerPoint 不会抬高起点，只有写明了大于 0 的最小值才报。
+    用形状拼出来的图查不了，要出图后人工看。"""
+    plot = chart._chartSpace.find(".//" + C_NS + "plotArea")
+    if plot is None:
+        return []
+    out = []
+    for ax in plot.findall(C_NS + "valAx"):
+        aid = ax.find(C_NS + "axId")
+        scaling = ax.find(C_NS + "scaling")
+        if aid is None or (scaling is not None and scaling.find(C_NS + "logBase") is not None):
+            continue
+        groups = [el for el in plot if el.tag in BAR_TAGS + LINE_TAGS
+                  and aid.get("val") in set(a.get("val") for a in el.findall(C_NS + "axId"))]
+        if not any(el.tag in BAR_TAGS for el in groups):
+            continue
+        points, skip = [], False
+        for el in groups:
+            g = el.find(C_NS + "grouping")
+            grouping = g.get("val") if g is not None else "clustered"
+            series = _series_values(el)
+            raw = [v for s in series for v in s.values()]
+            if grouping == "percentStacked" or any(v < 0 for v in raw):
+                skip = True
+                break
+            if grouping == "stacked":
+                cats = set().union(*[set(s) for s in series]) if series else set()
+                if el.tag in BAR_TAGS and cats and all(series[0].get(i, 0.0) > 0 for i in cats):
+                    sp = el.find(C_NS + "ser").find(C_NS + "spPr")
+                    if sp is not None and sp.find(A_NS + "noFill") is not None:
+                        skip = True              # 透明下段托起来的区间条
+                        break
+                for i in sorted(cats):
+                    run = 0.0
+                    for s in series:               # 这一段留空的，PowerPoint 当 0 叠（实测：下段首尾留空的瀑布图照样从 0 起）
+                        run += s.get(i, 0.0)
+                        points.append(run)
+            else:
+                points.extend(raw)
+        if skip or not points:
+            continue
+        mn = scaling.find(C_NS + "min") if scaling is not None else None
+        if mn is not None:
+            try:
+                low = float(mn.get("val"))
+            except (TypeError, ValueError):
+                continue
+            if low > 0:
+                out.append("数值轴从 %g 起，不是从 0 起" % low)
+        elif min(points) > 0 and max(points) > min(points) and (max(points) - min(points)) / max(points) < 1 / 6.0:
+            out.append("数值轴没写最小值，图上的点在 %g~%g 之间，PowerPoint 会自动把起点抬高" % (min(points), max(points)))
+    return out
 
 
 def _char_em(c):
@@ -176,7 +256,7 @@ def _officecli():
 
 
 def officecli_validate(pptx):
-    """⑦ OpenXML schema 校验。返回 (错误数, 按类型计数)；没装 officecli 返回 (None, {})。"""
+    """⑨ OpenXML schema 校验。返回 (错误数, 按类型计数)；没装 officecli 返回 (None, {})。"""
     exe = _officecli()
     if not exe:
         return None, {}
@@ -321,12 +401,30 @@ def main():
     print("   无问题" if not hit else "   共 %d 处（计入失败）" % hit)
     fails += hit
 
+    def walk(shapes):                 # 组合里的图也查
+        for sh in shapes:
+            yield sh
+            if hasattr(sh, "shapes"):     # 组合
+                yield from walk(sh.shapes)
+
+    print("⑧ 柱图数值轴起点（原生柱形图、条形图要从 0 起）:")
+    hit = 0
+    for i, sl in enumerate(prs.slides, 1):
+        for sh in walk(sl.shapes):
+            if getattr(sh, "has_chart", False) and sh.has_chart:
+                for msg in chart_axis_issues(sh.chart):
+                    print("   p%d %s: %s → 把最小值写成 0（python-pptx：chart.value_axis.minimum_scale = 0）；差别小到看不清，就改用折线或把差值写进标签"
+                          % (i, sh.name, msg))
+                    hit += 1
+    print("   无问题" if not hit else "   共 %d 处（计入失败）" % hit)
+    fails += hit
+
     if a.officecli:
         n, kinds = officecli_validate(a.pptx)
         if n is None:
-            print("⑧ schema 校验: 未安装 officecli（npm i -g @officecli/officecli），跳过")
+            print("⑨ schema 校验: 未安装 officecli（npm i -g @officecli/officecli），跳过")
         else:
-            print("⑧ schema 校验（officecli validate）: %s" % ("通过" if not n else "%d 个错误" % n))
+            print("⑨ schema 校验（officecli validate）: %s" % ("通过" if not n else "%d 个错误" % n))
             for k, c in kinds.most_common(5):
                 print("   %3d × %s" % (c, k))
             if n and a.strict:

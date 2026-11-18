@@ -15,12 +15,12 @@
 
 | 程序 | 位置 | 查什么 | 什么时候跑 |
 |---|---|---|---|
-| `style_lint.py` | `skills/ethan-report-writing/scripts/` | 硬禁词（读台账 `references/style-lexicon.md`）和 %/pt、LaTeX、第二人称三条警告 | 每份给业务看的文档交付前 |
+| `style_lint.py` | `skills/ethan-report-writing/scripts/` | 硬禁词（读台账 `references/style-lexicon.md`）和 %/pt、LaTeX、第二人称三条警告；分析报告开头超过 350 字按硬禁报 | 每份给业务看的文档交付前 |
 | `trace_scan.py` | `skills/ethan-report-writing/scripts/` | 内部痕迹：协作方名字（`--names` 补你自己的）、过程用词、本机路径、轮次号 | 同上 |
 | `figcheck.py` | `skills/ethan-report-writing/scripts/` | 出图的文字重叠、折线穿字、出界 | 每张 matplotlib 图保存时 |
 | `deckcheck.py` | `skills/ethan-report-writing/scripts/` | 飞书幻灯片快照和导出 PDF：用词、编号、页码引用、拆词、出界；`scope` 算改动范围和验收范围 | 每次改片、交验收员之前 |
 | `pairsnap.py` | `skills/ethan-report-writing/scripts/` | 存“交付版 → 用户定稿”成对稿、算手改比例、留考题 | 用户手改定稿之后 |
-| `check_deck.py` | `skills/ethan-slide-deck/scripts/` | PPTX 七项：完整性、非法色值、越界、重叠、黑名单、文字溢出、图表标签位置 | 每份 PPTX 交付前 |
+| `check_deck.py` | `skills/ethan-slide-deck/scripts/` | PPTX 八项：完整性、非法色值、越界、重叠、黑名单、文字溢出、图表标签位置、柱图数值轴从 0 起 | 每份 PPTX 交付前 |
 | `pkgcheck.py` | `skills/ethan-data-package-review/scripts/` | 取数助手交来的数据包：说改了没重跑、公式缓存为空、明文个人信息、时间窗缺天 | 每轮收包解包后、人工审核前 |
 | `extract_package.py` | `skills/ethan-data-package-review/scripts/` | 安全解包：拒绝越界路径、软链、重名、覆盖旧目录 | 收到 zip 包时 |
 

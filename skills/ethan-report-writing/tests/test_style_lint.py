@@ -184,6 +184,49 @@ class TestPlainAndScope(LintCase):
             u"| 渠道 | 到期订阅 | 变化(pt) |\n|---|---|---|\n| 官网 | 1.2万 | +0.3 |\n")
 
 
+class TestNeighbourWords(LintCase):
+    """“其实”撞上“其”加另一个词时不算；“几成”不加除外。"""
+
+    lexicon = u"""# 测试台账
+
+## 一、硬禁（lint 命中即不过）
+
+| 禁用 | 改成 | 来源 |
+|---|---|---|
+| 其实 | 删 | 测试 |
+| 三成 | 写百分比 | 测试 |
+| 九成 | 写百分比 | 测试 |
+"""
+
+    def test_other_words_not_hit(self):
+        for text in (u"及其实现方式见下表", u"订阅模式助其实现扭亏为盈", u"最接近其实际损失", u"其实施细则如下"):
+            self.assertNoHit(text)
+
+    def test_real_uses_still_hit(self):
+        for text in (u"其实不然", u"这其实", u"其实现在看是对的", u"其实现实世界里更复杂", u"其实现场的客服很少",
+                     u"其实现有数据已经够了", u"其实现阶段不必改", u"其实际上不难", u"其实现金流是正的", u"其实现货库存够",
+                     u"其实现成的模板可以用", u"其实施工方没到"):
+            self.assertHit(text, u"删")
+        for text in (u"约三成的订单", u"流失九成员工", u"约三成本月到期", u"前三成本项"):      # “几成”照旧，一处除外都不加
+            self.assertHit(text, u"写百分比")
+
+
+class TestLongLine(LintCase):
+    """一行超过 300 字（单行的飞书回读稿、很长的段落）：每一处都报，位置写第几个字。"""
+
+    def test_every_hit_reported_with_position(self):
+        text = u"<p>" + u"甲" * 320 + u"</p><p>这件事说白了</p><p>你看，那件事也说白了，你说呢</p>\n"
+        hard, warn = style_lint.lint_file(self.write_doc(text, "one.xml"), self.banned)
+        self.assertEqual([h[1] for h in hard], [u"说白了", u"说白了"])
+        self.assertEqual(hard[0][0], u"1 第 %d 字" % (text.index(u"说白了") + 1))
+        self.assertIn(u"那件事也说白了", hard[1][3])
+        self.assertEqual([w[1] for w in warn], [u"你", u"你"])
+
+    def test_short_line_still_first_hit_only(self):
+        hard, _ = style_lint.lint_file(self.write_doc(u"这件事说白了，那件事也说白了\n"), self.banned)
+        self.assertEqual([(h[0], h[1]) for h in hard], [(1, u"说白了")])
+
+
 class TestPlaceholderOnlyCell(LintCase):
     lexicon = (u"## 一、硬禁\n\n| 禁用 | 改成 | 来源 |\n|---|---|---|\n"
                u"| …… | 只有占位 | 测试 |\n| X | 只有占位 | 测试 |\n| / | 只有分隔 | 测试 |\n")
@@ -210,6 +253,21 @@ class TestDefensiveWarnings(unittest.TestCase):
             hard, warn = self.lint(text)
             self.assertEqual(hard, [], text)
             self.assertTrue(any(u"防御性写法" in w[2] for w in warn), text)
+
+    def test_more_defensive_phrases_warn(self):
+        # 把判断交回给读者、两头都留的说法也提醒（只警告，不拦）
+        for text in (u"现在还不能说带不来新单。\n", u"样本太少，还不能下结论。\n", u"影响有待进一步观察。\n",
+                     u"是否推广视试点结果而定。\n", u"达到 300 台后由董事会再定。\n", u"上线时间由产品团队再行决定。\n",
+                     u"实际台数可能更多，也可能更少。\n"):
+            hard, warn = self.lint(text)
+            self.assertEqual(hard, [], text)
+            self.assertTrue(any(u"防御性写法" in w[2] for w in warn), text)
+
+    def test_defensive_wording_no_false_alarm(self):
+        for text in (u"由华东仓发货。\n", u"视频会议定在周三。\n", u"预计缺口 1.6 万，按定版预测测算。\n",
+                     u"门槛由产品团队在 11-06 会上定为 3 万。\n"):
+            _hard, warn = self.lint(text)
+            self.assertFalse(any(u"防御性写法" in w[2] for w in warn), text)
 
     def test_plain_pending_line_not_warned(self):
         hard, warn = self.lint(u"原因待产品团队确认。\n原因待业务确认。\n按业务说法，口径不变。\n本周续费率提升 0.4pt。\n")
@@ -251,6 +309,12 @@ class TestCli(LintCase):
         r = self.run_cli(clean, dirty)
         self.assertEqual(r.returncode, 1, r.stdout + r.stderr)
 
+    def test_long_line_prints_position(self):
+        r = self.run_cli(self.write_doc(u"<p>" + u"乙" * 320 + u"</p><p>这件事说白了</p><p>那件事也说白了</p>\n", "one.xml"))
+        self.assertEqual(r.returncode, 1, r.stdout + r.stderr)
+        self.assertRegex(r.stdout, r"硬禁 2 / 警告 0 ==")
+        self.assertRegex(r.stdout, u"  \\[硬禁\\] L1 第 \\d+ 字 「说白了」→ 简言之   \\| ")
+
     def test_no_args_exit_2(self):
         self.assertEqual(self.run_cli().returncode, 2)
 
@@ -273,6 +337,122 @@ class TestRealLexicon(unittest.TestCase):
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
 
+
+class OpeningLength(unittest.TestCase):
+    """分析文档开头字数：第一章是结论、摘要这类时，量到第一张图、表或下一章之前。"""
+
+    def setUp(self):
+        warnings.simplefilter("ignore", ResourceWarning)  # 同 LintCase：style_lint 逐行读稿的文件句柄没显式关
+        self.tmp = tempfile.mkdtemp(prefix="style_lint_opening_")
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def doc(self, body, name="doc.md"):
+        p = os.path.join(self.tmp, name)
+        with io.open(p, "w", encoding="utf-8") as f:
+            f.write(body)
+        return p
+
+    def test_counts_until_first_figure(self):
+        text = u"# 标题\n\n## 一、结论与建议\n\n**一句话结论。**\n\n1. 要点一\n\n![](fig/a.png)\n\n后面很长" + u"字" * 500
+        ln, cnt = style_lint.opening_length(text)
+        self.assertEqual((ln, cnt), (3, len(u"一句话结论。1.要点一")))
+
+    def test_stops_at_table_and_next_heading(self):
+        self.assertEqual(style_lint.opening_length(u"一、结论与建议\n甲乙丙\n| 事项 | 建议 |\n|---|---|\n")[1], 3)
+        self.assertEqual(style_lint.opening_length(u"## 一、结论\n甲乙丙丁\n\n## 二、背景\n正文")[1], 4)
+        self.assertEqual(style_lint.opening_length(u"一、结论与建议\n甲乙\n二、整体表现\n正文")[1], 2)
+
+    def test_feishu_xml_on_one_line(self):
+        xml = u'<title>稿</title><h1>一、结论与建议</h1><p><b>结论一句。</b></p><p><span text-color="gray">注一句</span></p><img src="x"/><p>后文</p>'
+        self.assertEqual(style_lint.opening_length(xml)[1], len(u"结论一句。注一句"))
+
+    def test_no_conclusion_chapter_is_not_checked(self):
+        self.assertIsNone(style_lint.opening_length(u"# 方法说明\n\n## 一、计算规则\n" + u"字" * 900))
+        self.assertIsNone(style_lint.opening_length(u"正文一段\n1. 结论是这样\n2. 另一条\n"))      # 编号列表不是章标题
+
+    def test_numbered_list_inside_chapter_does_not_stop(self):
+        text = u"# 标题\n\n## 一、结论与建议\n\n**结论。**\n\n1. 结论甲\n2. 要点乙\n3. 要点丙\n\n![](a.png)\n"
+        self.assertEqual(style_lint.opening_length(text)[1], len(u"结论。1.结论甲2.要点乙3.要点丙"))
+
+    def test_heading_variants(self):
+        self.assertEqual(style_lint.opening_length(u"## 1. 结论与建议\n甲乙丙\n\n## 2. 背景\n正文")[1], 3)
+        self.assertEqual(style_lint.opening_length(u"## 摘要\n甲乙\n\n## 正文第一章\n后文")[1], 2)
+        self.assertEqual(style_lint.opening_length(u"# 稿\n\n## 一、核心结论\n甲\n### 小标题\n乙丙\n## 二、背景\n后文")[1], len(u"甲小标题乙丙"))
+
+    def test_preface_before_chapter_counts(self):
+        text = u"# 标题\n\n前言五个字\n\n## 一、结论与建议\n甲乙\n\n![](a.png)\n"
+        self.assertEqual(style_lint.opening_length(text), (5, 7))
+
+    def test_conclusion_must_be_first_heading(self):
+        method = (u"# 方法说明\n\n## 一、计算规则\n" + u"字" * 600 + u"\n\n![](a.png)\n\n## 二、使用说明\n"
+                  + u"字" * 600 + u"\n\n## 总结\n收尾\n")
+        self.assertIsNone(style_lint.opening_length(method))                                      # 方法说明末尾的总结
+        self.assertIsNone(style_lint.opening_length(u"# 稿\n\n## 一、背景\n" + u"字" * 600 + u"\n\n### 结论\n甲乙\n"))   # 章里的结论小节
+        xml = u"<title>稿</title><h1>背景</h1><p>" + u"字" * 600 + u"</p><h1>结论</h1><p>甲</p>"
+        self.assertIsNone(style_lint.opening_length(xml))
+        self.assertIsNone(style_lint.opening_length(u"# 背景\n" + u"字" * 600 + u"\n\n# 结论\n甲乙\n"))   # 没有文档标题、结论排在第二章
+        self.assertEqual(style_lint.opening_length(u"# 稿名\n\n# 一、结论与建议\n甲乙丙\n\n# 二、背景\n正文")[1], 3)
+        hard, _ = style_lint.lint_file(self.doc(method, "method.md"), [])
+        self.assertEqual(hard, [])
+
+    def test_keyword_needs_boundary(self):
+        for head in (u"## 摘要耗时拆回单仓", u"## 结论1：先看大仓", u"# 总结报告", u"## 一、总结会纪要"):
+            self.assertIsNone(style_lint.opening_length(head + u"\n" + u"字" * 900), head)
+        for head in (u"## 一、结论和下一步", u"## 核心结论与建议", u"## 结论（先看这里）", u"## 一、结论摘要", u"## 结论：三句话",
+                     u"## 一、结论先行", u"## 结论先行", u"一、结论建议"):
+            self.assertEqual(style_lint.opening_length(head + u"\n甲乙丙\n\n![](a.png)\n")[1], 3, head)
+
+    def test_preface_with_figure_stops_there(self):
+        text = u"# 标题\n\n前言\n\n![](a.png)\n\n" + u"字" * 500 + u"\n\n## 一、结论与建议\n甲乙\n"
+        self.assertEqual(style_lint.opening_length(text)[1], 2)
+
+    def test_xml_stops_at_same_level_heading(self):
+        xml = u"<title>稿</title><h1>1. 结论与建议</h1><p>甲乙丙</p><h2>小节</h2><p>丁</p><h1>2. 背景</h1><p>后文很长</p>"
+        self.assertEqual(style_lint.opening_length(xml)[1], len(u"甲乙丙小节丁"))
+
+    def test_limit_comes_from_skill(self):
+        skill = self.doc(u"一、结论与建议  一句话结论 + 3 条要点，到第一张图或表之前不超过 180 字 + 示意图\n", "SKILL.md")
+        self.assertEqual(style_lint.opening_limit(skill), 180)
+        self.assertEqual(style_lint.opening_limit(self.doc(u"没有写上限\n", "S2.md")), style_lint.OPENING_DEFAULT)
+        self.assertEqual(style_lint.opening_limit(os.path.join(self.tmp, "不存在.md")), style_lint.OPENING_DEFAULT)
+
+    def test_limit_read_from_skill_dir(self):
+        """脚本在技能目录的 scripts/ 下：读上一级的 SKILL.md；scripts/ 里另有一份时用那份。"""
+        os.makedirs(os.path.join(self.tmp, "scripts"))
+        os.makedirs(os.path.join(self.tmp, "references"))
+        script = os.path.join(self.tmp, "scripts", "style_lint.py")
+        shutil.copy(os.path.join(HERE, "scripts", "style_lint.py"), script)
+        self.doc(u"## 一、硬禁\n\n| 禁用 | 改成 | 来源 |\n|---|---|---|\n| 说白了 | 简言之 | 测试 |\n",
+                 os.path.join("references", "style-lexicon.md"))
+        self.doc(u"标题下到第一张图或表之前不超过 20 字\n", "SKILL.md")
+        draft = self.doc(u"## 一、结论与建议\n\n" + u"字" * 21 + u"\n\n![](a.png)\n", "draft.md")
+        run = lambda: subprocess.run([sys.executable, script, draft], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                     universal_newlines=True, encoding="utf-8")
+        r = run()
+        self.assertEqual(r.returncode, 1, r.stdout + r.stderr)
+        self.assertIn(u"开头 21 字", r.stdout)
+        self.assertIn(u"不超过 20 字", r.stdout)
+        self.doc(u"标题下到第一张图或表之前不超过 30 字\n", os.path.join("scripts", "SKILL.md"))
+        r = run()
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
+    def test_over_limit_is_hard_and_within_is_clean(self):
+        limit = style_lint.opening_limit()
+        long_doc = self.doc(u"## 一、结论与建议\n\n" + u"字" * (limit + 1) + u"\n\n![](a.png)\n")
+        hard, _ = style_lint.lint_file(long_doc, [])
+        self.assertEqual(len(hard), 1)
+        self.assertIn(u"开头 %d 字" % (limit + 1), hard[0][1])
+        ok_doc = self.doc(u"## 一、结论与建议\n\n" + u"字" * limit + u"\n\n![](a.png)\n", "ok.md")
+        self.assertEqual(style_lint.lint_file(ok_doc, [])[0], [])
+
+    def test_exit_code(self):
+        p = self.doc(u"## 一、结论与建议\n\n" + u"字" * 2000 + u"\n")
+        r = subprocess.run([sys.executable, os.path.join(HERE, "scripts", "style_lint.py"), p],
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        self.assertEqual(r.returncode, 1)
+        self.assertIn(u"开头 2000 字", r.stdout.decode("utf-8"))
 
 if __name__ == "__main__":
     unittest.main()

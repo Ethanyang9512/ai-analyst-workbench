@@ -190,7 +190,7 @@ def chart_decline():
         for xi, yv in zip(x, y):
             ax.text(xi, yv + dy, f"{yv:.1f}%", ha="center", fontsize=12.5,
                     fontweight="bold", color=color)
-    ax.set_title("只有涨了价的月付续费率下降，年付持平",
+    ax.set_title("多次续费：涨了价的月付下降，没涨价的年付持平",
                  fontsize=17, fontweight="bold", color=BLACK, pad=40)
     for sp in ("top", "right", "left"):
         ax.spines[sp].set_visible(False)
