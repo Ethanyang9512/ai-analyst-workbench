@@ -4,7 +4,9 @@
 
 ## [未发布]
 
-（还没有。）
+### 变更
+
+- CI：GitHub 的 ubuntu-latest 换成 Ubuntu 26.04 后不再提供 Python 3.9，`stdlib · Python 3.9` 那一组改为固定在 `ubuntu-24.04` 上跑。只动测试配置，技能和程序没变。
 
 ## [0.4.0] - 2026-11-18
 
